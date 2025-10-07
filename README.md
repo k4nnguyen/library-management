@@ -11,7 +11,6 @@
 - **Tự động hóa** các nghiệp vụ thư viện truyền thống
 - **Triển khai thuần Java** không phụ thuộc framework
 - **Tối ưu hóa** quy trình mượn/trả sách
-- **Nâng cao** trải nghiệm người dùng với GUI Java Swing
 - **Giảm thiểu** sai sót trong quản lý
 - **Cung cấp** công cụ thống kê, báo cáo chuyên nghiệp
 
