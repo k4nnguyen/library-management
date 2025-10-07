@@ -149,27 +149,6 @@ java Main
 4. Hệ thống tự tính ngày hẹn trả
 5. Xác nhận tạo phiếu
 
-##  Cấu Trúc Thư Mục Dự Án
-
-```
-LibraryManagementSystem/
-├── src/                    # Source code Java
-│   ├── Main.java          # Lớp chính khởi chạy ứng dụng
-│   ├── Book.java          # Lớp quản lý sách
-│   ├── User.java          # Lớp quản lý độc giả
-│   ├── PhieuMuon.java     # Lớp quản lý phiếu mượn
-│   ├── ThuThu.java        # Lớp quản lý thủ thư
-│   ├── QuanLyThuVien.java # Lớp quản lý chính (DAO)
-│        
-│       
-├── bin/                   # Thư mục chứa file .class đã biên dịch
-├── data/                  # Thư mục lưu trữ dữ liệu
-│   ├── books.dat
-│   ├── users.dat
-│   └── phieumuon.dat
-├── lib/                   # Thư mục thư viện (nếu có)
-└── README.md              # File hướng dẫn này
-```
 
 ## Xử Lý Lỗi Thường Gặp
 
