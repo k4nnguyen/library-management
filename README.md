@@ -4,7 +4,7 @@
 
 ##  Giới Thiệu
 
-**Hệ Thống Quản Lý Thư Viện** là một ứng dụng desktop được phát triển bằng **Java Core** thuần túy, không sử dụng bất kỳ framework nào. Ứng dụng được xây dựng hoàn toàn dựa trên các thư viện chuẩn của Java, nhằm tự động hóa toàn bộ quy trình quản lý của một thư viện hiện đại, là giải pháp toàn diện thay thế cho phương pháp quản lý thủ công truyền thống, giúp nâng cao hiệu quả hoạt động và chất lượng phục vụ.
+**Hệ Thống Quản Lý Thư Viện** là một ứng dụng desktop được phát triển bằng **Java Core** thuần túy, không sử dụng bất kỳ framework nào. Ứng dụng được xây dựng hoàn toàn dựa trên các thư viện chuẩn của Java, nhằm tự động hóa toàn bộ quy trình quản lý của một thư viện hiện đại, là giải pháp toàn diện thay thế cho phương pháp quản lý thủ công truyền thống, giúp nâng cao hiệu quả hoạt động.
 
 ## Mục Tiêu Dự Án
 
