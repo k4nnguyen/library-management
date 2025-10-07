@@ -1,4 +1,4 @@
-#  Hệ Thống Quản Lý Thư Viện - Java Core Desktop Application
+#  Hệ Thống Quản Lý Thư Viện - Java Desktop Application
 
 ![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=java&logoColor=white)
 
@@ -9,11 +9,9 @@
 ## Mục Tiêu Dự Án
 
 - **Tự động hóa** các nghiệp vụ thư viện truyền thống
-- **Triển khai thuần Java** không phụ thuộc framework
 - **Tối ưu hóa** quy trình mượn/trả sách
 - **Giảm thiểu** sai sót trong quản lý
 - **Cung cấp** công cụ thống kê, báo cáo chuyên nghiệp
-
 
 ## Chức Năng Hệ Thống Chi Tiết
 
