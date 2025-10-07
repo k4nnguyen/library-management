@@ -14,31 +14,10 @@
 - **Giảm thiểu** sai sót trong quản lý
 - **Cung cấp** công cụ thống kê, báo cáo chuyên nghiệp
 
-##  Yêu Cầu Hệ Thống
-
-### Phần Cứng Tối Thiểu
-- **Bộ vi xử lý:** Intel Core i3 hoặc tương đương
-- **Bộ nhớ RAM:** Tối thiểu 2GB (Khuyến nghị 4GB)
-- **Ổ đĩa cứng:** Tối thiểu 200MB trống
-- **Màn hình:** Độ phân giải 1024x768 trở lên
-
-### Phần Mềm Bắt Buộc
-- **Hệ điều hành:** Windows 7/8/10/11, macOS 10.12+, Linux
-- **Java Runtime Environment:** Phiên bản 8 trở lên
-- **Không yêu cầu** cơ sở dữ liệu bên ngoài (sử dụng file-based storage)
-
-## Kiến Trúc Hệ Thống Thuần Java
-
-### Công Nghệ Sử Dụng
-- **Ngôn ngữ lập trình:** Java Core (JDK 8+)
-- **Kiến trúc:** MVC (Model-View-Controller) thủ công
-- **Xử lý sự kiện:** Java Event Listener
-- **Quản lý dependency:** Không sử dụng, pure Java
-
 
 ## Chức Năng Hệ Thống Chi Tiết
 
-###  2. Quản Lý Thông Tin Độc Giả (Class: User)
+###  1. Quản Lý Thông Tin Độc Giả (Class: User)
 
 
 
@@ -49,7 +28,7 @@
 - **Tìm kiếm**: Theo ID, tên, số điện thoại
 - **Quản lý thẻ**: Kích hoạt/khóa thẻ độc giả
 
-### 3. Quản Lý Kho Sách (Class: Book)
+### 2. Quản Lý Kho Sách (Class: Book)
 
 
 #### Chức năng:
@@ -59,7 +38,7 @@
 - **Tìm kiếm sách**: Đa điều kiện (tên, tác giả, thể loại)
 - **Quản lý số lượng**: Tự động cập nhật khi mượn/trả
 
-### 4. Quản Lý Mượn/Trả Sách (Class: PhieuMuon)
+### 3. Quản Lý Mượn/Trả Sách (Class: PhieuMuon)
 
 
 
