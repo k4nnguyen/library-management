@@ -1,7 +1,5 @@
 # Hệ Thống Quản Lý Thư Viện - Java Desktop Application
 
-![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=java&logoColor=white)
-
 ## Giới Thiệu
 
 **Hệ Thống Quản Lý Thư Viện** là một ứng dụng desktop được phát triển bằng **Java Core** thuần túy, không sử dụng bất kỳ framework nào. Ứng dụng được xây dựng nhằm tự động hóa toàn bộ quy trình quản lý của một thư viện hiện đại, là giải pháp toàn diện thay thế cho phương pháp quản lý thủ công truyền thống, giúp nâng cao hiệu quả hoạt động. Với các tính năng giúp cho việc
