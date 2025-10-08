@@ -44,15 +44,15 @@ số lượng sách theo thể loại cũng như tạo báo cáo khi quá hạn 
 
 1. **Xác thực độc giả**:
 2. **Kiểm tra sách khả dụng**:
-3. **Tạo phiếu mượn**: Tự động tính
+3. **Tạo phiếu mượn**:
 4. **Cập nhật số lượng sách**:
 
 #### Quy Trình Trả Sách:
 
-1. **Xác định phiếu mượn**: Tìm theo
+1. **Xác định phiếu mượn**:
 2. **Kiểm tra hạn trả**:
 3. **Ghi nhận trả**:
-4. **Cập nhật kho sách**: Tăng số lượng sách có sẵn
+4. **Cập nhật kho sách**:
 
 ### 5. Hệ Thống Báo Cáo & Thống Kê
 
