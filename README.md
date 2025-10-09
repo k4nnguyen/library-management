@@ -62,7 +62,8 @@ số lượng sách theo thể loại cũng như tạo báo cáo khi quá hạn 
 ## Danh sách Object cần tạo
 
 1. Book
-2. bookCategory
-3. Reader (User)
+2. bookManager
+3. Reader
 4. Librarian
 5. Loan (Phiếu mượn)
+6. User (Phục vụ kế thừa)
