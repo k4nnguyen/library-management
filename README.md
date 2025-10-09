@@ -58,3 +58,11 @@ số lượng sách theo thể loại cũng như tạo báo cáo khi quá hạn 
 - **Thống kê độc giả**: Phân tích theo tình trạng thẻ
 - **Báo cáo mượn/trả**: Thống kê lượt mượn, tỷ lệ trả đúng hạn
 - **Báo cáo quá hạn**: Danh sách phiếu mượn quá hạn
+
+## Danh sách Object cần tạo
+
+1. Book
+2. bookCategory
+3. Reader (User)
+4. Librarian
+5. Loan (Phiếu mượn)
