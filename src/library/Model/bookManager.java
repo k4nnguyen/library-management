@@ -1,7 +1,7 @@
 package library.Model;
 import library.Model.Book;
 import java.util.*;
-// ======================= AN =============================
+// ======================= Khanh =============================
 public class bookManager {
     private String idBorrowCard;      // id thẻ mượn sách
     private Book book;             // Thông tin sách mượn
@@ -9,10 +9,10 @@ public class bookManager {
     private int quantity;          // Số lượng mượn
 
     public bookManager(String idBorrowCard, Book book, Reader reader, int quantity) {
-        this.idBorrowCard = idBorrowCard;
-        this.book = book;
-        this.reader = reader;
-        this.quantity = quantity;
+        setIdBorrowCard(idBorrowCard);
+        setBook(book);
+        setReader(reader);
+        setQuantity(quantity);
     }
 
     public String getIdBorrowCard() {
