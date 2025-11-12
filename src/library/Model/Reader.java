@@ -1,83 +1,21 @@
 package library.Model;
 //================== MinhNQ =========================
-import java.util.UUID;
-import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Reader 
-{
-    private String userID;
-    private String name;
-    private String phoneNumber;
-    private String email;
-    private String address;
+public class Reader extends User {
+
     private boolean isCardValid;
+    private List<Loan> loanHistory;
 
-    private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
-    private static final String PHONE_REGEX = "\\d{10}";
-
-    public Reader(String name, String phoneNumber, String email, String address) 
-    {
-        this.userID = "USR-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
-        
-        setName(name);
-        setPhoneNumber(phoneNumber);
-        setEmail(email);
-        setAddress(address);
-
+    public Reader(String name, String phoneNumber, String email, String address) {
+        super(name, phoneNumber, email, address);
         this.isCardValid = true;
-    }
-
-    public String getUserID() {
-        return userID;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getAddress() {
-        return address;
+        this.loanHistory = new ArrayList<>();
     }
 
     public boolean isCardValid() {
         return isCardValid;
-    }
-
-    public void setName(String name) {
-        if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("Tên độc giả không được để trống.");
-        }
-        this.name = name;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        if (phoneNumber == null || !phoneNumber.matches(PHONE_REGEX)) {
-            throw new IllegalArgumentException("Số điện thoại phải là 10 chữ số.");
-        }
-        this.phoneNumber = phoneNumber;
-    }
-
-    public void setEmail(String email) {
-        if (email == null || !Pattern.matches(EMAIL_REGEX, email)) {
-            throw new IllegalArgumentException("Email không đúng định dạng.");
-        }
-        this.email = email;
-    }
-
-    public void setAddress(String address) {
-        if (address == null) {
-            this.address = ""; // Gán giá trị mặc định là chuỗi rỗng
-        } else {
-            this.address = address;
-        }
     }
 
     public void lockCard() {
@@ -88,15 +26,26 @@ public class Reader
         this.isCardValid = true;
     }
 
-    public void displayInformation() 
-    {
+    public List<Loan> getLoanHistory() {
+        return loanHistory;
+    }
+
+    public void addLoanToHistory(Loan loan) {
+        if (loan != null) {
+            this.loanHistory.add(loan);
+        }
+    }
+
+    @Override
+    public void displayInformation() {
         System.out.println("--- Reader Information ---");
-        System.out.println("User ID: " + this.userID);
-        System.out.println("Name: " + this.name);
-        System.out.println("Phone: " + this.phoneNumber);
-        System.out.println("Email: " + this.email);
-        System.out.println("Address: " + this.address);
+        System.out.println("User ID: " + getUserID());
+        System.out.println("Name: " + getName());
+        System.out.println("Phone: " + getPhoneNumber());
+        System.out.println("Email: " + getEmail());
+        System.out.println("Address: " + getAddress());
         System.out.println("Card Status: " + (this.isCardValid ? "Active" : "Locked"));
+        System.out.println("Total Loans: " + this.loanHistory.size());
         System.out.println("--------------------------");
     }
 }
