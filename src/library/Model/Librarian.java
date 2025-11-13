@@ -1,5 +1,5 @@
 package library.Model;
-// ======================= LAM =============================
+// ======================= LAM ==============================
 public class Librarian extends User {
 
     private boolean workingStatus;
