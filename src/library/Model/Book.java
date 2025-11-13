@@ -2,7 +2,7 @@ package library.Model;
 // ======================= AN =============================
 public class Book {
     private String bookName,genre,author;
-    private int bookLength,publishYear,numberOfBook;
+    private int bookLength,publishYear,bookQuantity;
     private final int bookID;
     private Boolean available;
     // Constructor
@@ -12,12 +12,12 @@ public class Book {
         this.genre = "";
         this.bookLength = 0;
         this.publishYear = 0;
-        this.numberOfBook = 0;
+        this.bookQuantity = 0;
         this.available = false; 
     }
     public Book(int id, String bookName, String genre,
     String author, int bookLength, int publishYear,
-    int numberOfBook, Boolean available)
+    int bookQuantity, Boolean available)
     {
         this.bookID = id;
         setBookName(bookName);
@@ -25,7 +25,7 @@ public class Book {
         setAuthor(author);
         setBookLength(bookLength);
         setPublishYear(publishYear);
-        setNumberOfBook(numberOfBook);
+        setbookQuantity(bookQuantity);
         setAvailable(available);
     }
     // Set and Get
@@ -64,10 +64,10 @@ public class Book {
         else
             throw new IllegalArgumentException("Năm xuất bản cần phải trong phạm vi 0 - 2025");
     }
-    public final void setNumberOfBook(int numberOfBook)
+    public final void setbookQuantity(int bookQuantity)
     {
-        if(numberOfBook > 0)
-            this.numberOfBook = numberOfBook;
+        if(bookQuantity > 0)
+            this.bookQuantity = bookQuantity;
         else
             throw new IllegalArgumentException("Số lượng sách cần là số dương");
     }
@@ -96,8 +96,8 @@ public class Book {
     public int getPublishYear() {
         return publishYear;
     }
-    public int getNumberOfBook() {
-        return numberOfBook;
+    public int getbookQuantity() {
+        return bookQuantity;
     }
     public Boolean getAvailable() {
         return available;
