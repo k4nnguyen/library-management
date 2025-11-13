@@ -13,7 +13,7 @@ public class Book {
         this.bookLength = 0;
         this.publishYear = 0;
         this.numberOfBook = 0;
-        this.available = false;
+        this.available = false; 
     }
     public Book(int id, String bookName, String genre,
     String author, int bookLength, int publishYear,
@@ -114,3 +114,4 @@ public class Book {
     }
 
 }
+//
