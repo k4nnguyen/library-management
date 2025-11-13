@@ -1,6 +1,5 @@
 package library.Model;
 import java.util.*;
-import library.Model.Book;
 // ======================= Khanh =============================
 public class bookManager {
     private final List<Book> books;
@@ -49,6 +48,9 @@ public class bookManager {
     // Update book quantity
     public void updateBookQuantity(int bookId,int quantity)
     {
+        Book x = findBookById(bookId);
+        if(x != null)
+            x.setQuantity(quantity);
     }
 
     // Show all book
