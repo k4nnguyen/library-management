@@ -64,7 +64,7 @@ public class Book {
         else
             throw new IllegalArgumentException("Năm xuất bản cần phải trong phạm vi 0 - 2025");
     }
-    public final void setbookQuantity(int bookQuantity)
+    public final void setQuantity(int bookQuantity)
     {
         if(bookQuantity > 0)
             this.bookQuantity = bookQuantity;
@@ -96,7 +96,7 @@ public class Book {
     public int getPublishYear() {
         return publishYear;
     }
-    public int getbookQuantity() {
+    public int getQuantity() {
         return bookQuantity;
     }
     public Boolean getAvailable() {
