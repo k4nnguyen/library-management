@@ -1,8 +1,9 @@
 package library.Model;
 import java.util.*;
+import library.Model.Book;
 // ======================= Khanh =============================
 public class bookManager {
-    private List<Book> books;
+    private final List<Book> books;
     private int nextBookId;
     public bookManager(){
         this.books = new ArrayList<>();
@@ -46,12 +47,20 @@ public class bookManager {
     }
 
     // Update book quantity
-    // public void updateBookQuantity(int bookId,int quantity)
-    // {
-    //     Book x = findBookById(bookId);
-    //     if(x != null)
-    //     {
-            
-    //     }
-    // }
+    public void updateBookQuantity(int bookId,int quantity)
+    {
+    }
+
+    // Show all book
+    public void showBooksInformation()
+    {
+        for(Book x: books)
+        {
+            x.getInformation();
+            System.out.println("================================");
+        }
+    }
+    public List<Book> getBooks(){
+        return books;
+    }
 }
