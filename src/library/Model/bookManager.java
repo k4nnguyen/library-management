@@ -1,49 +1,68 @@
 package library.Model;
-import library.Model.Book;
 import java.util.*;
 // ======================= Khanh =============================
 public class bookManager {
-    private String idBorrowCard;      // id thẻ mượn sách
-    private Book book;             // Thông tin sách mượn
-    private Reader reader;         // Thông tin người mượn
-    private int quantity;          // Số lượng mượn
-
-    public bookManager(String idBorrowCard, Book book, Reader reader, int quantity) {
-        setIdBorrowCard(idBorrowCard);
-        setBook(book);
-        setReader(reader);
-        setQuantity(quantity);
+    private final List<Book> books;
+    private int nextBookId;
+    public bookManager(){
+        this.books = new ArrayList<>();
+        this.nextBookId = 1;
     }
 
-    public String getIdBorrowCard() {
-        return idBorrowCard;
+    // Find book By id
+    public Book findBookById(int bookId)
+    {
+        for(Book x: books)
+        {
+            if(x.getBookID() == bookId)
+                return x;
+        }
+        return null;
+    }
+    // Add new Book
+    public void addBook(String name, String genre, String author,
+    int length, int year, int quantity){
+        Book book = new Book(nextBookId++, name, genre,author,length,year,quantity,true);
+        books.add(book);
     }
 
-    public void setIdBorrowCard(String idBorrowCard) {
-        this.idBorrowCard = idBorrowCard;
+    // Remove Book
+    public void removeBook(int bookId)
+    {
+        Book x = findBookById(bookId);
+        if(x != null)
+            books.remove(bookId);
     }
 
-    public Book getBook() {
-        return book;
+    // Set Available
+    public void setBookAvailable(int bookId, boolean available)
+    {
+        Book x = findBookById(bookId);
+        if(x != null)
+        {
+            if(available) x.setAvailable();
+            else x.setUnavailable();
+        }
     }
 
-    public void setBook(Book book) {
-        this.book = book;
+    // Update book quantity
+    public void updateBookQuantity(int bookId,int quantity)
+    {
+        Book x = findBookById(bookId);
+        if(x != null)
+            x.setQuantity(quantity);
     }
 
-    public Reader getReader() {
-        return reader;
+    // Show all book
+    public void showBooksInformation()
+    {
+        for(Book x: books)
+        {
+            x.getInformation();
+            System.out.println("================================");
+        }
     }
-
-    public void setReader(Reader reader) {
-        this.reader = reader;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public List<Book> getBooks(){
+        return books;
     }
 }
