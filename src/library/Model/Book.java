@@ -25,7 +25,7 @@ public class Book {
         setAuthor(author);
         setBookLength(bookLength);
         setPublishYear(publishYear);
-        setbookQuantity(bookQuantity);
+        setQuantity(bookQuantity);
         setAvailable(available);
     }
     // Set and Get
