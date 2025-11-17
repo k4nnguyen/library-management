@@ -31,7 +31,9 @@ public class Librarian extends User {
     }
 
     public void setStartDate(String startDate) {
-        this.startDate = startDate;
+        if (startDate != null && !startDate.trim().isEmpty()) {
+            this.startDate = startDate;
+        }
     }
 
     public int getNumberOfLibrarian() {
@@ -39,7 +41,9 @@ public class Librarian extends User {
     }
 
     public void setNumberOfLibrarian(int numberOfLibrarian) {
-        this.numberOfLibrarian = numberOfLibrarian;
+        if (numberOfLibrarian >= 0) {
+            this.numberOfLibrarian = numberOfLibrarian;
+        }
     }
 
     @Override
