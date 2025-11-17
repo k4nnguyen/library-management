@@ -17,6 +17,6 @@ Cách restart:
 ```powershell
 # Từ thư mục gốc project
 cd "path\to\library-management"
-javac -cp "lib\*;." testConnection
-java -cp "lib\*;." testConnection
+javac -cp "lib\*;src" src\library\test\testConnection.java
+java -cp "lib\*;src" library.test.testConnection
 ```
