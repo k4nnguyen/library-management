@@ -1,0 +1,12 @@
+{
+  "java.project.sourcePaths": ["src"],
+  "java.project.referencedLibraries": [
+    "lib\\mssql-jdbc-13.2.1.jre8.jar",
+    "lib\\mssql-jdbc-13.2.1.jre8-javadoc.jar",
+    "lib\\mssql-jdbc-13.2.1.jre8-sources.jar",
+    "lib\\mssql-jdbc-13.2.1.jre11.jar",
+    "lib\\mssql-jdbc-13.2.1.jre11-javadoc.jar",
+    "lib\\mssql-jdbc-13.2.1.jre11-sources.jar",
+    "c:\\Users\\An Nguyen\\Documents\\NotWork\\library-management\\lib\\mssql-jdbc-13.2.1.jre8.jar"
+  ]
+}

@@ -64,3 +64,90 @@ VALUES
 select * from dbo.books
 select * from dbo.users
 select * from dbo.loan
+
+-- =====================================================
+-- CAI DAT KET NOI SSMS VOI JAVA
+-- =====================================================
+
+USE master;
+GO
+
+-- 1. Enable Mixed Mode Authentication
+EXEC xp_instance_regwrite
+    @rootkey = 'HKEY_LOCAL_MACHINE',
+    @key = 'Software\Microsoft\MSSQLServer\MSSQLServer',
+    @value_name = 'LoginMode',
+    @type = 'REG_DWORD',
+    @value = 2;
+GO
+
+-- 2. Tao LOGIN Test123 (neu chua ton tai)
+IF NOT EXISTS (SELECT * FROM sys.sql_logins WHERE name = 'Test123')
+BEGIN
+    CREATE LOGIN Test123 WITH PASSWORD = 'Test@123';
+END
+ELSE
+BEGIN
+    -- Neu da ton tai, chi update password
+    ALTER LOGIN Test123 WITH PASSWORD = 'Test@123';
+    ALTER LOGIN Test123 ENABLE;
+END
+GO
+
+-- 4. Gan quyen cho Test123 trong database library_management
+USE library_management;
+GO
+
+-- Tao USER trong database (map voi LOGIN)
+IF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = 'Test123')
+BEGIN
+    CREATE USER Test123 FOR LOGIN Test123;
+END
+GO
+
+-- =====================================================
+-- PHAN QUYEN CHO Test123
+-- =====================================================
+
+-- Option 1: FULL ADMIN (db_owner) - Quyen cao nhat trong database
+ALTER ROLE db_owner ADD MEMBER Test123;
+GO
+
+-- Option 2: Chi doc/ghi (comment Option 1, uncomment Option 2 neu muon)
+/*
+-- Quyen SELECT (doc)
+ALTER ROLE db_datareader ADD MEMBER Test123;
+-- Quyen INSERT, UPDATE, DELETE (ghi)
+ALTER ROLE db_datawriter ADD MEMBER Test123;
+*/
+GO
+
+-- Option 3: Phan quyen cu the theo bang (comment Option 1, uncomment Option 3)
+/*
+GRANT SELECT, INSERT, UPDATE, DELETE ON books TO Test123;
+GRANT SELECT, INSERT, UPDATE, DELETE ON [users] TO Test123;
+GRANT SELECT, INSERT, UPDATE, DELETE ON loan TO Test123;
+*/
+GO
+
+-- =====================================================
+-- KIEM TRA QUYEN
+-- =====================================================
+-- Xem thong tin LOGIN
+SELECT 
+    name AS LoginName,
+    type_desc AS LoginType,
+    is_disabled AS IsDisabled,
+    create_date AS CreateDate
+FROM sys.sql_logins 
+WHERE name IN ('sa', 'Test123');
+
+-- Xem quyen cua Test123 trong database
+SELECT 
+    dp.name AS UserName,
+    r.name AS RoleName,
+    r.type_desc AS RoleType
+FROM sys.database_principals dp
+LEFT JOIN sys.database_role_members drm ON dp.principal_id = drm.member_principal_id
+LEFT JOIN sys.database_principals r ON drm.role_principal_id = r.principal_id
+WHERE dp.name = 'Test123';
