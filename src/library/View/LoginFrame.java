@@ -19,7 +19,7 @@ public class LoginFrame extends JFrame {
     private void initializeUI() {
         setTitle("Hệ Thống Quản Lý Thư Viện");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(400, 300);
+        setSize(450, 320);
         setLocationRelativeTo(null); // Center window
         setResizable(false);
 
