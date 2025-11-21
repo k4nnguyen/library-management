@@ -43,13 +43,13 @@ public class LoginFrame extends JFrame {
         formPanel.setBackground(Color.WHITE);
 
 
-        formPanel.add(new JLabel("👤 Tên đăng nhập:"));
+        formPanel.add(new JLabel("Tên đăng nhập:"));
         usernameField = new JTextField();
         usernameField.setToolTipText("Nhập tên đăng nhập");
         formPanel.add(usernameField);
 
 
-        formPanel.add(new JLabel("🔒 Mật khẩu:"));
+        formPanel.add(new JLabel("Mật khẩu:"));
         passwordField = new JPasswordField();
         passwordField.setToolTipText("Nhập mật khẩu");
         formPanel.add(passwordField);
