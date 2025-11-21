@@ -8,8 +8,11 @@ public class Reader extends User {
     private boolean isCardValid;
     private List<Loan> loanHistory;
 
-    public Reader(String name, String phoneNumber, String email, String address) {
-        super(name, phoneNumber, email, address);
+    public Reader(String name, String phoneNumber, String email, String address, 
+                  String username, String password) {
+        
+        super(name, phoneNumber, email, address, username, password);
+        
         this.isCardValid = true;
         this.loanHistory = new ArrayList<>();
     }
@@ -44,6 +47,7 @@ public class Reader extends User {
         System.out.println("Phone: " + getPhoneNumber());
         System.out.println("Email: " + getEmail());
         System.out.println("Address: " + getAddress());
+        System.out.println("Username: " + getUsername());
         System.out.println("Card Status: " + (this.isCardValid ? "Active" : "Locked"));
         System.out.println("Total Loans: " + this.loanHistory.size());
         System.out.println("--------------------------");

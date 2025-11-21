@@ -10,16 +10,23 @@ public abstract class User {
     private String phoneNumber;
     private String email;
     private String address;
+    private String username;
+    private String password; 
 
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
     private static final String PHONE_REGEX = "\\d{10}";
 
-    public User(String name, String phoneNumber, String email, String address) {
+    public User(String name, String phoneNumber, String email, String address, 
+                String username, String password) {
+        
         this.userID = "USR-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        
         setName(name);
         setPhoneNumber(phoneNumber);
         setEmail(email);
         setAddress(address);
+        setUsername(username);
+        setPassword(password);
     }
 
     public String getUserID() {
@@ -65,6 +72,31 @@ public abstract class User {
 
     public void setAddress(String address) {
         this.address = (address == null) ? "" : address;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        if (username == null || username.trim().isEmpty()) {
+            throw new IllegalArgumentException("Username khong duoc de trong.");
+        }
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        if (password == null || password.length() < 6) {
+            throw new IllegalArgumentException("Password phai co it nhat 6 ky tu.");
+        }
+        this.password = password; 
+    }
+    
+    public boolean checkPassword(String passwordAttempt) {
+        if (passwordAttempt == null) {
+            return false;
+        }
+        return this.password.equals(passwordAttempt);
     }
 
     public abstract void displayInformation();
