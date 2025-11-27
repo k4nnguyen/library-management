@@ -56,14 +56,74 @@ public class BookPanel extends JPanel {
         buttonPanel.setBackground(Color.WHITE);
 
         JButton addButton = createButton("Thêm", new Color(0, 150, 0));
+        addButton.addActionListener(e -> showAddBookDialog());
+
         JButton editButton = createButton("Sửa", new Color(255, 140, 0));
+        editButton.addActionListener(e -> showEditBookDialog());
+
         JButton deleteButton = createButton("Xóa", new Color(200, 0, 0));
+        deleteButton.addActionListener(e -> deleteBook());
 
         buttonPanel.add(addButton);
         buttonPanel.add(editButton);
         buttonPanel.add(deleteButton);
 
         add(buttonPanel, BorderLayout.SOUTH);
+    }
+
+    private void showAddBookDialog() {
+        BookDialog dialog = new BookDialog((Frame) SwingUtilities.getWindowAncestor(this), "Thêm Sách Mới");
+        dialog.setVisible(true);
+
+        if (dialog.isSucceeded()) {
+            tableModel.addRow(new Object[] {
+                    dialog.getBookId(),
+                    dialog.getBookTitle(),
+                    dialog.getAuthor(),
+                    dialog.getCategory(),
+                    dialog.getYear(),
+                    dialog.getQuantity()
+            });
+        }
+    }
+
+    private void showEditBookDialog() {
+        int selectedRow = bookTable.getSelectedRow();
+        if (selectedRow >= 0) {
+            String id = (String) tableModel.getValueAt(selectedRow, 0);
+            String title = (String) tableModel.getValueAt(selectedRow, 1);
+            String author = (String) tableModel.getValueAt(selectedRow, 2);
+            String category = (String) tableModel.getValueAt(selectedRow, 3);
+            String year = (String) tableModel.getValueAt(selectedRow, 4);
+            int quantity = Integer.parseInt(tableModel.getValueAt(selectedRow, 5).toString());
+
+            BookDialog dialog = new BookDialog((Frame) SwingUtilities.getWindowAncestor(this), "Sửa Thông Tin Sách");
+            dialog.setBookData(id, title, author, category, year, quantity);
+            dialog.setVisible(true);
+
+            if (dialog.isSucceeded()) {
+                tableModel.setValueAt(dialog.getBookTitle(), selectedRow, 1);
+                tableModel.setValueAt(dialog.getAuthor(), selectedRow, 2);
+                tableModel.setValueAt(dialog.getCategory(), selectedRow, 3);
+                tableModel.setValueAt(dialog.getYear(), selectedRow, 4);
+                tableModel.setValueAt(dialog.getQuantity(), selectedRow, 5);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn sách để sửa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    private void deleteBook() {
+        int selectedRow = bookTable.getSelectedRow();
+        if (selectedRow >= 0) {
+            int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa sách này?", "Xác nhận",
+                    JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                tableModel.removeRow(selectedRow);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn sách để xóa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+        }
     }
 
     private JButton createButton(String text, Color color) {
