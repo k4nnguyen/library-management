@@ -1,25 +1,23 @@
 package library.Model;
 //================== MinhNQ =========================
-import java.util.UUID;
 import java.util.regex.Pattern;
 
 public abstract class User {
-
     private String userID;
     private String name;
     private String phoneNumber;
     private String email;
     private String address;
+    
     private String username;
     private String password; 
 
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
     private static final String PHONE_REGEX = "\\d{10}";
 
-    public User(String name, String phoneNumber, String email, String address, 
+    public User(String userID, String name, String phoneNumber, String email, String address, 
                 String username, String password) {
-        
-        this.userID = "USR-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        this.userID = userID;
         
         setName(name);
         setPhoneNumber(phoneNumber);

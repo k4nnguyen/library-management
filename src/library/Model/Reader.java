@@ -7,11 +7,13 @@ public class Reader extends User {
 
     private boolean isCardValid;
     private List<Loan> loanHistory;
+    
+    private static int idCounter = 0;
 
     public Reader(String name, String phoneNumber, String email, String address, 
                   String username, String password) {
         
-        super(name, phoneNumber, email, address, username, password);
+        super(String.format("U%03d", ++idCounter), name, phoneNumber, email, address, username, password);
         
         this.isCardValid = true;
         this.loanHistory = new ArrayList<>();
