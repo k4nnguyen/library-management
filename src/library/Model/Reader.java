@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Reader extends User {
-
+    private String id;
     private boolean isCardValid;
     private List<Loan> loanHistory;
 
-    public Reader(String name, String phoneNumber, String email, String address, 
+    public Reader(int idNumber, String name, String phoneNumber, String email, String address, 
                   String username, String password) {
         
         super(name, phoneNumber, email, address, username, password);
-        
+        this.id= "R"+ String.format("%03d", idNumber);
         this.isCardValid = true;
         this.loanHistory = new ArrayList<>();
     }
@@ -34,9 +34,10 @@ public class Reader extends User {
     }
 
     public void addLoanToHistory(Loan loan) {
-        if (loan != null) {
-            this.loanHistory.add(loan);
+        if (loan == null) {
+            throw new IllegalArgumentException("Giao dich muon sach khong duoc de trong.");
         }
+        this.loanHistory.add(loan);
     }
 
     @Override
