@@ -1,66 +1,24 @@
 package library.Model;
+//================== MinhNQ =========================
+import java.util.ArrayList;
+import java.util.List;
 
-import java.util.UUID;
+public class Reader extends User {
 
-public class Reader 
-{
-    private String userID;
-    private String name;
-    private String phoneNumber;
-    private String email;
-    private String address;
     private boolean isCardValid;
+    private List<Loan> loanHistory;
 
-    public Reader(String name, String phoneNumber, String email, String address) 
-    {
-        this.userID = "USR-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+    public Reader(String name, String phoneNumber, String email, String address, 
+                  String username, String password) {
         
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-        this.email = email;
-        this.address = address;
-
+        super(name, phoneNumber, email, address, username, password);
+        
         this.isCardValid = true;
-    }
-
-    public String getUserID() {
-        return userID;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getAddress() {
-        return address;
+        this.loanHistory = new ArrayList<>();
     }
 
     public boolean isCardValid() {
         return isCardValid;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public void lockCard() {
@@ -71,15 +29,27 @@ public class Reader
         this.isCardValid = true;
     }
 
-    public void displayInformation() 
-    {
+    public List<Loan> getLoanHistory() {
+        return loanHistory;
+    }
+
+    public void addLoanToHistory(Loan loan) {
+        if (loan != null) {
+            this.loanHistory.add(loan);
+        }
+    }
+
+    @Override
+    public void displayInformation() {
         System.out.println("--- Reader Information ---");
-        System.out.println("User ID: " + this.userID);
-        System.out.println("Name: " + this.name);
-        System.out.println("Phone: " + this.phoneNumber);
-        System.out.println("Email: " + this.email);
-        System.out.println("Address: " + this.address);
+        System.out.println("User ID: " + getUserID());
+        System.out.println("Name: " + getName());
+        System.out.println("Phone: " + getPhoneNumber());
+        System.out.println("Email: " + getEmail());
+        System.out.println("Address: " + getAddress());
+        System.out.println("Username: " + getUsername());
         System.out.println("Card Status: " + (this.isCardValid ? "Active" : "Locked"));
+        System.out.println("Total Loans: " + this.loanHistory.size());
         System.out.println("--------------------------");
     }
 }

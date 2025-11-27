@@ -1,61 +1,60 @@
 package library.Model;
-public class Librarian {
-    
-    private static int nextID = 1;
-    private String librarianID;
-    private String librarianName;
-    private String email;
-    private String phoneNumber;
+// ======================= LAM ==============================
+public class Librarian extends User {
+
     private boolean workingStatus;
     private String startDate;
     private int numberOfLibrarian;
 
-    
-    public Librarian(String librarianName, String email, String phoneNumber,
-                     boolean workingStatus, String startDate, int numberOfLibrarian) {
-        this.librarianID = "LIB" + String.format("%03d", nextID++);
-        this.librarianName = librarianName;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.workingStatus = workingStatus;
+    public Librarian(String name, String phoneNumber, String email, String address, 
+                    String startDate, int numberOfLibrarian) {
+        super(name, phoneNumber, email, address);
+        this.workingStatus = true;
         this.startDate = startDate;
         this.numberOfLibrarian = numberOfLibrarian;
-    }
-
-    public String getLibrarianID() {
-        return librarianID;
-    }
-
-    public String getLibrarianName() {
-        return librarianName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public String getStartDate() {
-        return startDate;
-    }
-
-    public int getNumberOfLibrarian() {
-        return numberOfLibrarian;
     }
 
     public boolean isWorking() {
         return workingStatus;
     }
 
-   
     public void setWorking() {
         this.workingStatus = true;
     }
 
     public void setNotWorking() {
         this.workingStatus = false;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(String startDate) {
+        if (startDate != null && !startDate.trim().isEmpty()) {
+            this.startDate = startDate;
+        }
+    }
+
+    public int getNumberOfLibrarian() {
+        return numberOfLibrarian;
+    }
+
+    public void setNumberOfLibrarian(int numberOfLibrarian) {
+        if (numberOfLibrarian >= 0) {
+            this.numberOfLibrarian = numberOfLibrarian;
+        }
+    }
+
+    @Override
+    public void displayInformation() {
+        System.out.println("Librarian ID: " + getUserID());
+        System.out.println("Name: " + getName());
+        System.out.println("Phone: " + getPhoneNumber());
+        System.out.println("Email: " + getEmail());
+        System.out.println("Address: " + getAddress());
+        System.out.println("Working Status: " + (this.workingStatus ? "Working" : "Not Working"));
+        System.out.println("Start Date: " + this.startDate);
+        System.out.println("Number of Librarians: " + this.numberOfLibrarian);
     }
 }
