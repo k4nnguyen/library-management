@@ -6,8 +6,7 @@ public class Librarian extends User {
     private String id,startDate;
 
     public Librarian(int idNumber, String name, String phoneNumber, String email, String address, 
-                    String username, String password,String startDate, 
-                    int numberOfLibrarian) {
+                    String username, String password,String startDate) {
         super(name, phoneNumber, email, address, username, password);
         this.id = "L" + String.format("%03d",idNumber);
         setWorking();
@@ -31,9 +30,10 @@ public class Librarian extends User {
     }
 
     public void setStartDate(String startDate) {
-        if (startDate != null && !startDate.trim().isEmpty()) {
-            this.startDate = startDate;
+        if (startDate == null || startDate.trim().isEmpty()) {
+            throw new IllegalArgumentException("Start date khong duoc de trong");
         }
+        this.startDate = startDate;
     }
 
     @Override
