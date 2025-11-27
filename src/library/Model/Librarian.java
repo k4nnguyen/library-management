@@ -3,15 +3,15 @@ package library.Model;
 public class Librarian extends User {
 
     private boolean workingStatus;
-    private String startDate;
-    private int numberOfLibrarian;
+    private String id,startDate;
 
-    public Librarian(String name, String phoneNumber, String email, String address, 
-                    String startDate, int numberOfLibrarian) {
-        super(name, phoneNumber, email, address);
-        this.workingStatus = true;
-        this.startDate = startDate;
-        this.numberOfLibrarian = numberOfLibrarian;
+    public Librarian(int idNumber, String name, String phoneNumber, String email, String address, 
+                    String username, String password,String startDate, 
+                    int numberOfLibrarian) {
+        super(name, phoneNumber, email, address, username, password);
+        this.id = "L" + String.format("%03d",idNumber);
+        setWorking();
+        setStartDate(startDate);
     }
 
     public boolean isWorking() {
@@ -36,16 +36,6 @@ public class Librarian extends User {
         }
     }
 
-    public int getNumberOfLibrarian() {
-        return numberOfLibrarian;
-    }
-
-    public void setNumberOfLibrarian(int numberOfLibrarian) {
-        if (numberOfLibrarian >= 0) {
-            this.numberOfLibrarian = numberOfLibrarian;
-        }
-    }
-
     @Override
     public void displayInformation() {
         System.out.println("Librarian ID: " + getUserID());
@@ -55,6 +45,5 @@ public class Librarian extends User {
         System.out.println("Address: " + getAddress());
         System.out.println("Working Status: " + (this.workingStatus ? "Working" : "Not Working"));
         System.out.println("Start Date: " + this.startDate);
-        System.out.println("Number of Librarians: " + this.numberOfLibrarian);
     }
 }
