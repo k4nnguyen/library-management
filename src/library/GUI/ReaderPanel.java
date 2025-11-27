@@ -1,8 +1,8 @@
 package library.GUI;
 
+import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
 
 public class ReaderPanel extends JPanel {
 
