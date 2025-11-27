@@ -1,32 +1,28 @@
 package library.Model;
 // ======================= AN =============================
 public class Book {
+    private int bookShelfId;
     private String bookName,genre,author;
     private int bookLength,publishYear,bookQuantity;
-    private final int bookID;
-    private Boolean available;
+    private int bookID;
     // Constructor
     public Book(){
         this.bookName = "";
-        this.bookID = 0;
         this.genre = "";
         this.bookLength = 0;
         this.publishYear = 0;
         this.bookQuantity = 0;
-        this.available = false; 
     }
     public Book(int id, String bookName, String genre,
     String author, int bookLength, int publishYear,
     int bookQuantity, Boolean available)
     {
-        this.bookID = id;
         setBookName(bookName);
         setGenre(genre);
         setAuthor(author);
         setBookLength(bookLength);
         setPublishYear(publishYear);
         setQuantity(bookQuantity);
-        setAvailable(available);
     }
     // Set and Get
     public final void setBookName(String bookName)
@@ -71,18 +67,9 @@ public class Book {
         else
             throw new IllegalArgumentException("Số lượng sách cần là số dương");
     }
-    public final void setAvailable(Boolean available)
-    {
-        if(available == true || available == false)
-            this.available = available;
-        else
-            throw new IllegalArgumentException("Cần phải set thành true hoặc false");
-    }
+
     public String getBookName() {
         return bookName;
-    }
-    public int getBookID() {
-        return bookID;
     }
     public String getGenre() {
         return genre;
@@ -99,15 +86,7 @@ public class Book {
     public int getQuantity() {
         return bookQuantity;
     }
-    public Boolean getAvailable() {
-        return available;
-    }
-    public void setAvailable() {
-        this.available = true;
-    }
-    public void setUnavailable() {
-        this.available = false;
-    }
+
     public void getInformation(){
         String s = "ID: " + String.format("%02d",this.bookID) + "\nTên sách: " + this.bookName + "\nThể loại: " + this.genre + "\nTác giả: " + this.author + "\nNăm xuất bản: " + this.publishYear +  "\nSố lượng trang: " + this.bookLength;
         System.out.println(s);
