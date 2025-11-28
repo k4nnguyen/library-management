@@ -13,7 +13,7 @@ public class Reader extends User {
         
         super(name, phoneNumber, email, address, username, password);
         this.id= "R"+ String.format("%03d", idNumber);
-        this.isCardValid = true;
+        activateCard();
         this.loanHistory = new ArrayList<>();
     }
 
