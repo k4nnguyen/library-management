@@ -43,7 +43,7 @@ public class bookManager {
             throw new IllegalArgumentException("So luong sach phai lon hon 0");
         }
         
-        Book book = new Book(nextBookId++, name, genre,author,length,year,quantity,true);
+        Book book = new Book(nextBookId++, name, genre,author,length,year,quantity);
         books.add(book);
     }
 

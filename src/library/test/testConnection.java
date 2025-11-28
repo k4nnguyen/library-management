@@ -58,7 +58,8 @@ public class testConnection {
             connection.close();
             System.out.println("\nConnection closed!");
 
-        } catch (SQLException e) {
+        } 
+        catch (SQLException e) {
             System.err.println("SQL Error: " + e.getMessage());
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
