@@ -1,6 +1,6 @@
 package library.Model;
 //================== MinhNQ =========================
-import java.util.*;
+import java.util.regex.Pattern;
 public abstract class User {
 
     private String name;
@@ -91,4 +91,5 @@ public abstract class User {
     }
 
     public abstract void displayInformation();
+    public abstract String getUserID();
 }
