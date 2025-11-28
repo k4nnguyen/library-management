@@ -1,17 +1,19 @@
 package library.Model;
+import java.time.format.DateTimeParseException;
+import java.time.LocalDate;
+
 // ======================= LAM ==============================
 public class Librarian extends User {
 
     private boolean workingStatus;
-    private String startDate;
-    private int numberOfLibrarian;
+    private String id,startDate;
 
-    public Librarian(String name, String phoneNumber, String email, String address, 
-                    String startDate, int numberOfLibrarian) {
-        super(name, phoneNumber, email, address);
-        this.workingStatus = true;
-        this.startDate = startDate;
-        this.numberOfLibrarian = numberOfLibrarian;
+    public Librarian(int idNumber, String name, String phoneNumber, String email, String address, 
+                    String username, String password,String startDate) {
+        super(name, phoneNumber, email, address, username, password);
+        this.id = "L" + String.format("%03d",idNumber);
+        setWorking();
+        setStartDate(startDate);
     }
 
     public boolean isWorking() {
@@ -31,19 +33,19 @@ public class Librarian extends User {
     }
 
     public void setStartDate(String startDate) {
-        if (startDate != null && !startDate.trim().isEmpty()) {
+        if (startDate == null || startDate.trim().isEmpty()) {
+            throw new IllegalArgumentException("Start date khong duoc de trong");
+        }
+        try{
+            LocalDate.parse(startDate);
             this.startDate = startDate;
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Invalid start date format. Please use YYYY-MM-DD.");
         }
     }
-
-    public int getNumberOfLibrarian() {
-        return numberOfLibrarian;
-    }
-
-    public void setNumberOfLibrarian(int numberOfLibrarian) {
-        if (numberOfLibrarian >= 0) {
-            this.numberOfLibrarian = numberOfLibrarian;
-        }
+    @Override
+    public String getUserID() {
+        return this.id;
     }
 
     @Override
@@ -55,6 +57,5 @@ public class Librarian extends User {
         System.out.println("Address: " + getAddress());
         System.out.println("Working Status: " + (this.workingStatus ? "Working" : "Not Working"));
         System.out.println("Start Date: " + this.startDate);
-        System.out.println("Number of Librarians: " + this.numberOfLibrarian);
     }
 }

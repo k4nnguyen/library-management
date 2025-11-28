@@ -23,6 +23,25 @@ public class bookManager {
     // Add new Book
     public void addBook(String name, String genre, String author,
     int length, int year, int quantity){
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Ten sach khong duoc de trong");
+        }
+        if (genre == null || genre.trim().isEmpty()) {
+            throw new IllegalArgumentException("The loai khong duoc de trong");
+        }
+        if (author == null || author.trim().isEmpty()) {
+            throw new IllegalArgumentException("Tac gia khong duoc de trong");
+        }
+        if (length <= 0) {
+            throw new IllegalArgumentException("Do dai sach phai lon hon 0");
+        }
+        if (year <= 0 || year > 2025) {
+            throw new IllegalArgumentException("Nam xuat ban khong hop le");
+        }
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("So luong sach phai lon hon 0");
+        }
+        
         Book book = new Book(nextBookId++, name, genre,author,length,year,quantity,true);
         books.add(book);
     }
@@ -32,7 +51,9 @@ public class bookManager {
     {
         Book x = findBookById(bookId);
         if(x != null)
-            books.remove(bookId);
+            books.remove(x);
+        else
+            throw new IllegalArgumentException("Khong tim thay sach voi ID: " + bookId);
     }
 
     // Set Available
@@ -44,14 +65,23 @@ public class bookManager {
             if(available) x.setAvailable();
             else x.setUnavailable();
         }
+        else {
+            throw new IllegalArgumentException("Khong tim thay sach voi ID: " + bookId);
+        }
     }
 
     // Update book quantity
     public void updateBookQuantity(int bookId,int quantity)
     {
+        if (quantity < 0) {
+            throw new IllegalArgumentException("So luong sach khong the am");
+        }
+        
         Book x = findBookById(bookId);
         if(x != null)
             x.setQuantity(quantity);
+        else
+            throw new IllegalArgumentException("Khong tim thay sach voi ID: " + bookId);
     }
 
     // Show all book
@@ -59,11 +89,11 @@ public class bookManager {
     {
         for(Book x: books)
         {
-            x.getInformation();
+            x.displayInformation();
             System.out.println("================================");
         }
     }
     public List<Book> getBooks(){
-        return books;
+        return new ArrayList<>(books);
     }
 }
