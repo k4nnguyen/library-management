@@ -1,6 +1,7 @@
 package library.Model;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class bookManager {
     private final List<Book> books;
@@ -89,7 +90,7 @@ public class bookManager {
     {
         for(Book x: books)
         {
-            x.getInformation();
+            x.displayInformation();
             System.out.println("================================");
         }
     }
