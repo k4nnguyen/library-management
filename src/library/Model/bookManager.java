@@ -1,6 +1,7 @@
 package library.Model;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class bookManager {
     private final List<Book> books;
@@ -42,7 +43,7 @@ public class bookManager {
             throw new IllegalArgumentException("So luong sach phai lon hon 0");
         }
         
-        Book book = new Book(nextBookId++, name, genre,author,length,year,quantity,true);
+        Book book = new Book(nextBookId++, name, genre,author,length,year,quantity);
         books.add(book);
     }
 
@@ -89,7 +90,7 @@ public class bookManager {
     {
         for(Book x: books)
         {
-            x.getInformation();
+            x.displayInformation();
             System.out.println("================================");
         }
     }

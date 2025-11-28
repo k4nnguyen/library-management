@@ -1,5 +1,4 @@
 package library.Model;
-// ======================= AN =============================
 public class Book {
     private String bookName,genre,author;
     private int bookLength,publishYear,bookQuantity;
@@ -17,7 +16,7 @@ public class Book {
     }
     public Book(int id, String bookName, String genre,
     String author, int bookLength, int publishYear,
-    int bookQuantity, Boolean available)
+    int bookQuantity)
     {
         this.bookID = id;
         setBookName(bookName);
@@ -26,7 +25,6 @@ public class Book {
         setBookLength(bookLength);
         setPublishYear(publishYear);
         setQuantity(bookQuantity);
-        setAvailable(available);
     }
     // Set and Get
     public final void setBookName(String bookName)
@@ -66,17 +64,20 @@ public class Book {
     }
     public final void setQuantity(int bookQuantity)
     {
-        if(bookQuantity > 0)
+        if(bookQuantity >= 0)
+        {
             this.bookQuantity = bookQuantity;
+            this.available = (bookQuantity > 0);
+        }
         else
-            throw new IllegalArgumentException("Số lượng sách cần là số dương");
+            throw new IllegalArgumentException("Số lượng sách không được là số âm");
     }
     public final void setAvailable(Boolean available)
     {
-        if(available == true || available == false)
-            this.available = available;
-        else
+        if(available == null)
             throw new IllegalArgumentException("Cần phải set thành true hoặc false");
+        else
+            this.available = available;
     }
     public String getBookName() {
         return bookName;

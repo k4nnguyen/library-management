@@ -13,7 +13,7 @@ public class Reader extends User {
         
         super(name, phoneNumber, email, address, username, password);
         this.id= "R"+ String.format("%03d", idNumber);
-        this.isCardValid = true;
+        activateCard();
         this.loanHistory = new ArrayList<>();
     }
 
@@ -39,7 +39,11 @@ public class Reader extends User {
         }
         this.loanHistory.add(loan);
     }
-
+    @Override
+    public String getUserID() {
+        return this.id;
+    }
+    
     @Override
     public void displayInformation() {
         System.out.println("--- Reader Information ---");
