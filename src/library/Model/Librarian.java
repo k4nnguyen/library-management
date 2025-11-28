@@ -1,4 +1,8 @@
 package library.Model;
+import java.time.format.DateTimeParseException;
+import java.sql.Date;
+import java.time.LocalDate;
+
 // ======================= LAM ==============================
 public class Librarian extends User {
 
@@ -33,7 +37,16 @@ public class Librarian extends User {
         if (startDate == null || startDate.trim().isEmpty()) {
             throw new IllegalArgumentException("Start date khong duoc de trong");
         }
-        this.startDate = startDate;
+        try{
+            LocalDate.parse(startDate);
+            this.startDate = startDate;
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Invalid start date format. Please use YYYY-MM-DD.");
+        }
+    }
+    
+    public String getUserID() {
+        return this.id;
     }
 
     @Override
