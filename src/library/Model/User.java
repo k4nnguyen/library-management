@@ -91,4 +91,5 @@ public abstract class User {
     }
 
     public abstract void displayInformation();
+    public abstract String getUserID();
 }
