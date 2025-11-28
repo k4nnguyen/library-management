@@ -1,6 +1,5 @@
 package library.Model;
 import java.time.format.DateTimeParseException;
-import java.sql.Date;
 import java.time.LocalDate;
 
 // ======================= LAM ==============================
@@ -44,7 +43,7 @@ public class Librarian extends User {
             throw new IllegalArgumentException("Invalid start date format. Please use YYYY-MM-DD.");
         }
     }
-    
+
     public String getUserID() {
         return this.id;
     }
