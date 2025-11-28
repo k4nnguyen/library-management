@@ -107,7 +107,7 @@ public class Book {
     public void setUnavailable() {
         this.available = false;
     }
-    public void getInformation(){
+    public void displayInformation(){
         String s = "ID: " + String.format("%02d",this.bookID) + "\nTên sách: " + this.bookName + "\nThể loại: " + this.genre + "\nTác giả: " + this.author + "\nNăm xuất bản: " + this.publishYear +  "\nSố lượng trang: " + this.bookLength;
         System.out.println(s);
     }
