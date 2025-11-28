@@ -39,7 +39,11 @@ public class Reader extends User {
         }
         this.loanHistory.add(loan);
     }
-
+    @Override
+    public String getUserID() {
+        return this.id;
+    }
+    
     @Override
     public void displayInformation() {
         System.out.println("--- Reader Information ---");
