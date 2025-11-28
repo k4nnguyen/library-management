@@ -1,5 +1,4 @@
 package library.Model;
-// ======================= AN =============================
 public class Book {
     private String bookName,genre,author;
     private int bookLength,publishYear,bookQuantity;

@@ -1,6 +1,7 @@
 package library.Model;
-import java.util.*;
-// ======================= Khanh =============================
+import java.util.ArrayList;
+import java.util.List;
+// ======================= An + Khanh =============================
 public class bookManager {
     private final List<Book> books;
     private int nextBookId;
