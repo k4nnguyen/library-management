@@ -71,4 +71,20 @@ public class Loan {
         this.returnDate = LocalDate.now();
         this.returned = true;
     }
+    public void displayInformation() {
+    System.out.println("Độc giả: " + reader.getName() + " (" + reader.getUserID() + ")");
+    System.out.println("Sách: " + book.getBookName());
+    System.out.println("Ngày mượn: " + borrowDate);
+    System.out.println("Ngày hết hạn: " + expireDate);
+    System.out.println("Trạng thái: " + (returned ? "Đã trả" : "Đang mượn"));
+    
+    if(returned && returnDate != null) {
+        System.out.println("Ngày trả: " + returnDate);
+    }
+    
+    if(isOverdue()) {
+        System.out.println("Quá hạn: " + getDaysOverdue() + " ngày");
+    }
+    System.out.println("=============================");
+}
 }
