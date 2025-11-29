@@ -1,17 +1,19 @@
 package library.Model;
-// ======================= LAM =============================
+import java.time.format.DateTimeParseException;
+import java.time.LocalDate;
+
+// ======================= LAM ==============================
 public class Librarian extends User {
 
     private boolean workingStatus;
-    private String startDate;
-    private int numberOfLibrarian;
+    private String id,startDate;
 
-    public Librarian(String name, String phoneNumber, String email, String address, 
-                    String startDate, int numberOfLibrarian) {
-        super(name, phoneNumber, email, address);
-        this.workingStatus = true;
-        this.startDate = startDate;
-        this.numberOfLibrarian = numberOfLibrarian;
+    public Librarian(int idNumber, String name, String phoneNumber, String email, String address, 
+                    String username, String password,String startDate) {
+        super(name, phoneNumber, email, address, username, password);
+        this.id = "L" + String.format("%03d",idNumber);
+        setWorking();
+        setStartDate(startDate);
     }
 
     public boolean isWorking() {
@@ -31,26 +33,35 @@ public class Librarian extends User {
     }
 
     public void setStartDate(String startDate) {
-        this.startDate = startDate;
+        if (startDate == null || startDate.trim().isEmpty()) {
+            throw new IllegalArgumentException("Ngày bắt đầu không được để trống.");
+        }
+        try{
+            LocalDate.parse(startDate);
+            this.startDate = startDate;
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Định dạng ngày không hợp lệ. Vui lòng sử dụng định dạng YYYY-MM-DD.");
+        }
+        try{
+            LocalDate.parse(startDate);
+            this.startDate = startDate;
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Invalid start date format. Please use YYYY-MM-DD.");
+        }
     }
-
-    public int getNumberOfLibrarian() {
-        return numberOfLibrarian;
-    }
-
-    public void setNumberOfLibrarian(int numberOfLibrarian) {
-        this.numberOfLibrarian = numberOfLibrarian;
+    @Override
+    public String getUserID() {
+        return this.id;
     }
 
     @Override
     public void displayInformation() {
-        System.out.println("Librarian ID: " + getUserID());
-        System.out.println("Name: " + getName());
-        System.out.println("Phone: " + getPhoneNumber());
+        System.out.println("Mã thủ thư: " + getUserID());
+        System.out.println("Tên: " + getName());
+        System.out.println("Số điện thoại: " + getPhoneNumber());
         System.out.println("Email: " + getEmail());
-        System.out.println("Address: " + getAddress());
-        System.out.println("Working Status: " + (this.workingStatus ? "Working" : "Not Working"));
-        System.out.println("Start Date: " + this.startDate);
-        System.out.println("Number of Librarians: " + this.numberOfLibrarian);
+        System.out.println("Địa chỉ: " + getAddress());
+        System.out.println("Trạng thái làm việc: " + (this.workingStatus ? "Đang làm việc" : "Không làm việc"));
+        System.out.println("Ngày bắt đầu: " + this.startDate);
     }
 }

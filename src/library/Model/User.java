@@ -1,29 +1,27 @@
 package library.Model;
 //================== MinhNQ =========================
-import java.util.UUID;
 import java.util.regex.Pattern;
-
 public abstract class User {
 
-    private String userID;
     private String name;
     private String phoneNumber;
     private String email;
     private String address;
+    private String username;
+    private String password; 
 
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
     private static final String PHONE_REGEX = "\\d{10}";
 
-    public User(String name, String phoneNumber, String email, String address) {
-        this.userID = "USR-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+    public User(String name, String phoneNumber, String email, String address, 
+                String username, String password) {
+        
         setName(name);
         setPhoneNumber(phoneNumber);
         setEmail(email);
         setAddress(address);
-    }
-
-    public String getUserID() {
-        return userID;
+        setUsername(username);
+        setPassword(password);
     }
 
     public String getName() {
@@ -32,7 +30,7 @@ public abstract class User {
 
     public void setName(String name) {
         if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("Ten khong duoc de trong.");
+            throw new IllegalArgumentException("Tên không được để trống!");
         }
         this.name = name;
     }
@@ -43,7 +41,7 @@ public abstract class User {
 
     public void setPhoneNumber(String phoneNumber) {
         if (phoneNumber == null || !phoneNumber.matches(PHONE_REGEX)) {
-            throw new IllegalArgumentException("So dien thoai phai la 10 chu so.");
+            throw new IllegalArgumentException("Số điện thoại phải là 10 chữ số");
         }
         this.phoneNumber = phoneNumber;
     }
@@ -54,7 +52,7 @@ public abstract class User {
 
     public void setEmail(String email) {
         if (email == null || !Pattern.matches(EMAIL_REGEX, email)) {
-            throw new IllegalArgumentException("Email khong dung dinh dang.");
+            throw new IllegalArgumentException("Email không đúng định dạng");
         }
         this.email = email;
     }
@@ -67,5 +65,31 @@ public abstract class User {
         this.address = (address == null) ? "" : address;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        if (username == null || username.trim().isEmpty()) {
+            throw new IllegalArgumentException("Username không được để trống!");
+        }
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        if (password == null || password.length() < 6) {
+            throw new IllegalArgumentException("Password phải có ít nhất 6 ký tự");
+        }
+        this.password = password; 
+    }
+    
+    public boolean checkPassword(String passwordAttempt) {
+        if (passwordAttempt == null) {
+            return false;
+        }
+        return this.password.equals(passwordAttempt);
+    }
+
     public abstract void displayInformation();
+    public abstract String getUserID();
 }

@@ -25,10 +25,10 @@ public class bookManager {
     public void addBook(String name, String genre, String author,
     int length, int year, int quantity){
         if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("Tên sách không được để trống");
+            throw new IllegalArgumentException("Tên sách không được để trống!");
         }
         if (genre == null || genre.trim().isEmpty()) {
-            throw new IllegalArgumentException("Thể loại không được để trống");
+            throw new IllegalArgumentException("Thể loại không được để trống!");
         }
         if (author == null || author.trim().isEmpty()) {
             throw new IllegalArgumentException("Tác giả không được để trống");
@@ -37,7 +37,7 @@ public class bookManager {
             throw new IllegalArgumentException("Độ dài sách phải lớn hơn 0");
         }
         if (year <= 0 || year > 2025) {
-            throw new IllegalArgumentException("Năm xuất bản không hợp lệ");
+            throw new IllegalArgumentException("Năm xuất bản không hợp lệ!");
         }
         if (quantity <= 0) {
             throw new IllegalArgumentException("Số lượng sách phải lớn hơn 0");
