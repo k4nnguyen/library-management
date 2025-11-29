@@ -4,6 +4,7 @@ import java.awt.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+import library.Manager.userManager;
 import java.util.regex.Pattern;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -17,6 +18,7 @@ public class ReaderPanel extends JPanel {
     private JTextField searchField;
     private JComboBox<String> searchOption;
     private List<Reader> readers;
+    private userManager userMgr;
 
     // Phone pattern matches User.PHONE_REGEX = "\\d{10}"
     private static final Pattern PHONE_PATTERN = Pattern.compile("\\d{10}");
@@ -89,8 +91,9 @@ public class ReaderPanel extends JPanel {
 
         add(buttonPanel, BorderLayout.SOUTH);
 
-        // load data
-        readers = dataManager.loadReaders();
+        // init manager and load data
+        userMgr = new userManager();
+        readers = userMgr.getAllReaders();
         populateTable();
 
         // search action with filter option
@@ -201,9 +204,10 @@ public class ReaderPanel extends JPanel {
                 int idNum = dataManager.nextReaderNumber(readers);
                 String username = "reader" + idNum;
                 String password = "pass123";
-                Reader r = new Reader(idNum, name, phone, address, username, password, dob, gender);
-                readers.add(r);
-                dataManager.saveReaders(readers);
+                // create via userManager (persists internally)
+                Reader r = userMgr.createReader(name, phone, address, username, password, dob, gender);
+                // reload list and refresh table
+                readers = userMgr.getAllReaders();
                 populateTable();
 
                 // notify main frame to refresh stats
@@ -264,7 +268,9 @@ public class ReaderPanel extends JPanel {
                     target.setPhoneNumber(newPhone);
                     target.setAddress(newAddress);
 
-                    dataManager.saveReaders(readers);
+                    // persist via manager
+                    userMgr.updateUser(target);
+                    readers = userMgr.getAllReaders();
                     populateTable();
 
                     java.awt.Window win = SwingUtilities.getWindowAncestor(this);
@@ -292,9 +298,9 @@ public class ReaderPanel extends JPanel {
                 Reader target = null;
                 for (Reader r : readers) if (r.getUserID().equals(id)) { target = r; break; }
                 if (target != null) {
-                    try {
-                        readers.remove(target);
-                        dataManager.saveReaders(readers);
+                        try {
+                        userMgr.removeUser(target.getUserID());
+                        readers = userMgr.getAllReaders();
                         populateTable();
 
                         java.awt.Window win = SwingUtilities.getWindowAncestor(this);
