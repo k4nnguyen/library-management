@@ -1,7 +1,11 @@
 package library.Model;
 //================== MinhNQ =========================
+import java.io.Serializable;
 import java.util.regex.Pattern;
-public abstract class User {
+
+public abstract class User implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String name;
     private String phoneNumber;

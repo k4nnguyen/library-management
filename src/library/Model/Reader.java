@@ -1,9 +1,11 @@
 package library.Model;
 //================== MinhNQ =========================
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Reader extends User implements Displayable {
+public class Reader extends User implements Displayable, Serializable {
+    private static final long serialVersionUID = 1L;
     private String id;
     private boolean isCardValid;
     private List<Loan> loanHistory;

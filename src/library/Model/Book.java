@@ -1,5 +1,10 @@
 package library.Model;
-public class Book implements Borrowable, Displayable{
+
+import java.io.Serializable;
+
+public class Book implements Borrowable, Displayable, Serializable{
+
+    private static final long serialVersionUID = 1L;
     private String bookName,genre,author;
     private int bookLength,publishYear,bookQuantity;
     private final int bookID;

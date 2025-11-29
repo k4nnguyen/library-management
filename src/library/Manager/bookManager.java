@@ -15,6 +15,14 @@ public class bookManager implements IBookService{
         this.nextBookId = 1;
     }
 
+    // Construct with existing books (e.g., loaded from persistence)
+    public bookManager(List<Book> initialBooks){
+        this.books = new ArrayList<>();
+        if(initialBooks != null) this.books.addAll(initialBooks);
+        // compute next id based on max existing id
+        this.nextBookId = this.books.stream().mapToInt(Book::getBookID).max().orElse(0) + 1;
+    }
+
     // Add new Book
     @Override
     public void addBook(String name, String genre, String author,
