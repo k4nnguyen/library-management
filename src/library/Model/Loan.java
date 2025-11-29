@@ -1,15 +1,19 @@
 package library.Model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
-public class Loan {
+public class Loan implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     private final Reader reader;
     private final Book book;
     private final LocalDate borrowDate;
     private final LocalDate expireDate;
     private LocalDate returnDate;
     private boolean returned;
+    
 
     public Loan(Reader reader, Book book, LocalDate borrowDate, LocalDate expireDate) {
         // Kiểm tra điều kiện

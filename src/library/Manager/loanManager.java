@@ -1,18 +1,24 @@
 package library.Manager;
 
-import library.Service.ILoanService;
-import library.Model.Loan;
-import library.Model.Reader;
-import library.Model.Book;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
+import library.Model.Book;
+import library.Model.Loan;
+import library.Model.Reader;
+import library.Service.ILoanService;
 
 public class loanManager implements ILoanService{
     private final List<Loan> loans;
     
     public loanManager(){
         this.loans = new ArrayList<>();
+    }
+
+    // Construct with existing loans (e.g., loaded from persistence)
+    public loanManager(List<Loan> initialLoans) {
+        this.loans = new ArrayList<>();
+        if (initialLoans != null) this.loans.addAll(initialLoans);
     }
     
     // ========== Loan Operations ==========
