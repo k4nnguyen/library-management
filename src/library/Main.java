@@ -50,9 +50,9 @@ public class Main {
         
         // ========== Demo Reader ==========
         System.out.println("--- TẠO ĐỘC GIẢ ---");
-        Reader reader1 = new Reader(1, "Nguyễn Văn A", "0123456789", 
-                                    "nguyenvana@email.com", "Hà Nội",
-                                    "user1", "password123");
+        Reader reader1 = new Reader(1, "Nguyễn Văn A", "0123456789",
+                        "Hà Nội",
+                        "user1", "password123");
         reader1.displayInformation();
         System.out.println();
         
