@@ -42,7 +42,12 @@ public class ReaderPanel extends JPanel {
 
         // Table
         String[] columnNames = { "Mã ĐG", "Họ Tên", "Ngày Sinh", "Giới Tính", "SĐT", "Địa Chỉ" };
-        tableModel = new DefaultTableModel(columnNames, 0);
+        tableModel = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         readerTable = new JTable(tableModel);
         readerTable.setRowHeight(25);
         readerTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
@@ -56,14 +61,77 @@ public class ReaderPanel extends JPanel {
         buttonPanel.setBackground(Color.WHITE);
 
         JButton addButton = createButton("Thêm", new Color(0, 150, 0));
+        addButton.addActionListener(e -> showAddReaderDialog());
+
         JButton editButton = createButton("Sửa", new Color(255, 140, 0));
+        editButton.addActionListener(e -> showEditReaderDialog());
+
         JButton deleteButton = createButton("Xóa", new Color(200, 0, 0));
+        deleteButton.addActionListener(e -> deleteReader());
 
         buttonPanel.add(addButton);
         buttonPanel.add(editButton);
         buttonPanel.add(deleteButton);
 
         add(buttonPanel, BorderLayout.SOUTH);
+    }
+
+    private void showAddReaderDialog() {
+        ReaderDialog dialog = new ReaderDialog((Frame) SwingUtilities.getWindowAncestor(this), "Thêm Độc Giả Mới");
+        dialog.setVisible(true);
+
+        if (dialog.isSucceeded()) {
+            tableModel.addRow(new Object[] {
+                    "Mới", // Placeholder
+                    dialog.getReaderName(),
+                    dialog.getDob(),
+                    dialog.getGender(),
+                    dialog.getPhone(),
+                    dialog.getAddress()
+            });
+        }
+    }
+
+    private void showEditReaderDialog() {
+        int selectedRow = readerTable.getSelectedRow();
+        if (selectedRow >= 0) {
+            String id = (String) tableModel.getValueAt(selectedRow, 0);
+            String name = (String) tableModel.getValueAt(selectedRow, 1);
+            String dob = (String) tableModel.getValueAt(selectedRow, 2);
+            String gender = (String) tableModel.getValueAt(selectedRow, 3);
+            String phone = (String) tableModel.getValueAt(selectedRow, 4);
+            String address = (String) tableModel.getValueAt(selectedRow, 5);
+
+            ReaderDialog dialog = new ReaderDialog((Frame) SwingUtilities.getWindowAncestor(this),
+                    "Sửa Thông Tin Độc Giả");
+            dialog.setReaderData(name, dob, gender, phone, address);
+            dialog.setVisible(true);
+
+            if (dialog.isSucceeded()) {
+                tableModel.setValueAt(dialog.getReaderName(), selectedRow, 1);
+                tableModel.setValueAt(dialog.getDob(), selectedRow, 2);
+                tableModel.setValueAt(dialog.getGender(), selectedRow, 3);
+                tableModel.setValueAt(dialog.getPhone(), selectedRow, 4);
+                tableModel.setValueAt(dialog.getAddress(), selectedRow, 5);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn độc giả để sửa!", "Thông báo",
+                    JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    private void deleteReader() {
+        int selectedRow = readerTable.getSelectedRow();
+        if (selectedRow >= 0) {
+            int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa độc giả này?", "Xác nhận",
+                    JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                tableModel.removeRow(selectedRow);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn độc giả để xóa!", "Thông báo",
+                    JOptionPane.WARNING_MESSAGE);
+        }
     }
 
     private JButton createButton(String text, Color color) {

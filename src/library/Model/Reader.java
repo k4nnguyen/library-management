@@ -3,7 +3,7 @@ package library.Model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Reader extends User {
+public class Reader extends User implements Displayable {
     private String id;
     private boolean isCardValid;
     private List<Loan> loanHistory;
@@ -39,7 +39,6 @@ public class Reader extends User {
         }
         this.loanHistory.add(loan);
     }
-    
     @Override
     public String getUserID() {
         return this.id;
@@ -55,5 +54,10 @@ public class Reader extends User {
         System.out.println("Tên đăng nhập: " + getUsername());
         System.out.println("Trạng thái thẻ: " + (this.isCardValid ? "Đang hoạt động" : "Đã khóa"));
         System.out.println("Tổng số lần mượn: " + this.loanHistory.size());
+    }
+
+    @Override
+    public String getDisplayString() {
+        return String.format("%s (%s) - %d loans", getName(), getUserID(), loanHistory.size());
     }
 }

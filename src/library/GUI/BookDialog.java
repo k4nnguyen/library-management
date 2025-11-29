@@ -5,7 +5,6 @@ import java.awt.*;
 
 public class BookDialog extends JDialog {
 
-    private JTextField idField;
     private JTextField titleField;
     private JTextField authorField;
     private JComboBox<String> categoryComboBox;
@@ -33,18 +32,15 @@ public class BookDialog extends JDialog {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
 
-        // ID (Read-only for now or auto-generated)
-        addLabelAndField(formPanel, "Mã Sách:", idField = new JTextField(), gbc, 0);
-
         // Title
-        addLabelAndField(formPanel, "Tên Sách:", titleField = new JTextField(), gbc, 1);
+        addLabelAndField(formPanel, "Tên Sách:", titleField = new JTextField(), gbc, 0);
 
         // Author
-        addLabelAndField(formPanel, "Tác Giả:", authorField = new JTextField(), gbc, 2);
+        addLabelAndField(formPanel, "Tác Giả:", authorField = new JTextField(), gbc, 1);
 
         // Category
         gbc.gridx = 0;
-        gbc.gridy = 3;
+        gbc.gridy = 2;
         gbc.weightx = 0.3;
         formPanel.add(new JLabel("Thể Loại:"), gbc);
         gbc.gridx = 1;
@@ -55,11 +51,11 @@ public class BookDialog extends JDialog {
         formPanel.add(categoryComboBox, gbc);
 
         // Year
-        addLabelAndField(formPanel, "Năm XB:", yearField = new JTextField(), gbc, 4);
+        addLabelAndField(formPanel, "Năm XB:", yearField = new JTextField(), gbc, 3);
 
         // Quantity
         gbc.gridx = 0;
-        gbc.gridy = 5;
+        gbc.gridy = 4;
         gbc.weightx = 0.3;
         formPanel.add(new JLabel("Số Lượng:"), gbc);
         gbc.gridx = 1;
@@ -111,10 +107,6 @@ public class BookDialog extends JDialog {
     }
 
     // Getters for data retrieval
-    public String getBookId() {
-        return idField.getText();
-    }
-
     public String getBookTitle() {
         return titleField.getText();
     }
@@ -136,9 +128,7 @@ public class BookDialog extends JDialog {
     }
 
     // Setters for editing
-    public void setBookData(String id, String title, String author, String category, String year, int quantity) {
-        idField.setText(id);
-        idField.setEditable(false); // ID usually not editable
+    public void setBookData(String title, String author, String category, String year, int quantity) {
         titleField.setText(title);
         authorField.setText(author);
         categoryComboBox.setSelectedItem(category);
