@@ -3,7 +3,7 @@ package library.Model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Reader extends User {
+public class Reader extends User implements Displayable {
     private String id;
     private boolean isCardValid;
     private List<Loan> loanHistory;
@@ -56,5 +56,10 @@ public class Reader extends User {
         System.out.println("Card Status: " + (this.isCardValid ? "Active" : "Locked"));
         System.out.println("Total Loans: " + this.loanHistory.size());
         System.out.println("--------------------------");
+    }
+
+    @Override
+    public String getDisplayString() {
+        return String.format("%s (%s) - %d loans", getName(), getUserID(), loanHistory.size());
     }
 }
