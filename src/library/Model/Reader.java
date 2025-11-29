@@ -35,7 +35,7 @@ public class Reader extends User implements Displayable {
 
     public void addLoanToHistory(Loan loan) {
         if (loan == null) {
-            throw new IllegalArgumentException("Giao dich muon sach khong duoc de trong.");
+            throw new IllegalArgumentException("Giao dịch mượn sách không được để trống.");
         }
         this.loanHistory.add(loan);
     }
@@ -46,16 +46,14 @@ public class Reader extends User implements Displayable {
     
     @Override
     public void displayInformation() {
-        System.out.println("--- Reader Information ---");
-        System.out.println("User ID: " + getUserID());
-        System.out.println("Name: " + getName());
-        System.out.println("Phone: " + getPhoneNumber());
+        System.out.println("Mã độc giả: " + getUserID());
+        System.out.println("Tên: " + getName());
+        System.out.println("Số điện thoại: " + getPhoneNumber());
         System.out.println("Email: " + getEmail());
-        System.out.println("Address: " + getAddress());
-        System.out.println("Username: " + getUsername());
-        System.out.println("Card Status: " + (this.isCardValid ? "Active" : "Locked"));
-        System.out.println("Total Loans: " + this.loanHistory.size());
-        System.out.println("--------------------------");
+        System.out.println("Địa chỉ: " + getAddress());
+        System.out.println("Tên đăng nhập: " + getUsername());
+        System.out.println("Trạng thái thẻ: " + (this.isCardValid ? "Đang hoạt động" : "Đã khóa"));
+        System.out.println("Tổng số lần mượn: " + this.loanHistory.size());
     }
 
     @Override
