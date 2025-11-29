@@ -1,6 +1,8 @@
 package library.Model;
-import java.util.*;
-// ======================= Khanh =============================
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class bookManager {
     private final List<Book> books;
     private int nextBookId;
@@ -23,25 +25,25 @@ public class bookManager {
     public void addBook(String name, String genre, String author,
     int length, int year, int quantity){
         if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("Ten sach khong duoc de trong");
+            throw new IllegalArgumentException("Tên sách không được để trống");
         }
         if (genre == null || genre.trim().isEmpty()) {
-            throw new IllegalArgumentException("The loai khong duoc de trong");
+            throw new IllegalArgumentException("Thể loại không được để trống");
         }
         if (author == null || author.trim().isEmpty()) {
-            throw new IllegalArgumentException("Tac gia khong duoc de trong");
+            throw new IllegalArgumentException("Tác giả không được để trống");
         }
         if (length <= 0) {
-            throw new IllegalArgumentException("Do dai sach phai lon hon 0");
+            throw new IllegalArgumentException("Độ dài sách phải lớn hơn 0");
         }
         if (year <= 0 || year > 2025) {
-            throw new IllegalArgumentException("Nam xuat ban khong hop le");
+            throw new IllegalArgumentException("Năm xuất bản không hợp lệ");
         }
         if (quantity <= 0) {
-            throw new IllegalArgumentException("So luong sach phai lon hon 0");
+            throw new IllegalArgumentException("Số lượng sách phải lớn hơn 0");
         }
         
-        Book book = new Book(nextBookId++, name, genre,author,length,year,quantity,true);
+        Book book = new Book(nextBookId++, name, genre,author,length,year,quantity);
         books.add(book);
     }
 
@@ -52,7 +54,7 @@ public class bookManager {
         if(x != null)
             books.remove(x);
         else
-            throw new IllegalArgumentException("Khong tim thay sach voi ID: " + bookId);
+            throw new IllegalArgumentException("Không tìm thấy sách với ID: " + bookId);
     }
 
     // Set Available
@@ -65,7 +67,7 @@ public class bookManager {
             else x.setUnavailable();
         }
         else {
-            throw new IllegalArgumentException("Khong tim thay sach voi ID: " + bookId);
+            throw new IllegalArgumentException("Không tìm thấy sách với ID: " + bookId);
         }
     }
 
@@ -73,14 +75,14 @@ public class bookManager {
     public void updateBookQuantity(int bookId,int quantity)
     {
         if (quantity < 0) {
-            throw new IllegalArgumentException("So luong sach khong the am");
+            throw new IllegalArgumentException("Số lượng sách không thể âm");
         }
         
         Book x = findBookById(bookId);
         if(x != null)
             x.setQuantity(quantity);
         else
-            throw new IllegalArgumentException("Khong tim thay sach voi ID: " + bookId);
+            throw new IllegalArgumentException("Không tìm thấy sách với ID: " + bookId);
     }
 
     // Show all book
@@ -88,7 +90,7 @@ public class bookManager {
     {
         for(Book x: books)
         {
-            x.getInformation();
+            x.displayInformation();
             System.out.println("================================");
         }
     }
