@@ -40,6 +40,7 @@ public class BookPanel extends JPanel {
         searchField = new JTextField(18);
         JButton searchButton = new JButton("Tìm kiếm");
         searchPanel.add(searchOption);
+        searchPanel.add(new JLabel("Tìm kiếm:"));
         searchPanel.add(searchField);
         searchPanel.add(searchButton);
 
