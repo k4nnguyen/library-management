@@ -10,9 +10,18 @@ import library.Service.IBookService;
 public class bookManager implements IBookService{
     private final List<Book> books;
     private int nextBookId;
+    
     public bookManager(){
         this.books = new ArrayList<>();
         this.nextBookId = 1;
+    }
+
+    // Construct with existing books (e.g., loaded from persistence)
+    public bookManager(List<Book> initialBooks){
+        this.books = new ArrayList<>();
+        if(initialBooks != null) this.books.addAll(initialBooks);
+        // compute next id based on max existing id
+        this.nextBookId = this.books.stream().mapToInt(Book::getBookID).max().orElse(0) + 1;
     }
 
     // Add new Book
@@ -20,22 +29,22 @@ public class bookManager implements IBookService{
     public void addBook(String name, String genre, String author,
     int length, int year, int quantity){
         if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("Ten sach khong duoc de trong");
+            throw new IllegalArgumentException("Tên sách không được để trống!");
         }
         if (genre == null || genre.trim().isEmpty()) {
-            throw new IllegalArgumentException("The loai khong duoc de trong");
+            throw new IllegalArgumentException("Thể loại không được để trống!");
         }
         if (author == null || author.trim().isEmpty()) {
-            throw new IllegalArgumentException("Tac gia khong duoc de trong");
+            throw new IllegalArgumentException("Tác giả không được để trống!");
         }
         if (length <= 0) {
-            throw new IllegalArgumentException("Do dai sach phai lon hon 0");
+            throw new IllegalArgumentException("Độ dài sách phải lớn hơn 0");
         }
         if (year <= 0 || year > 2025) {
-            throw new IllegalArgumentException("Nam xuat ban khong hop le");
+            throw new IllegalArgumentException("Năm xuất bản không hợp lệ");
         }
         if (quantity <= 0) {
-            throw new IllegalArgumentException("So luong sach phai lon hon 0");
+            throw new IllegalArgumentException("Số lượng sách phải lớn hơn 0");
         }
         
         Book book = new Book(nextBookId++, name, genre,author,length,year,quantity);
@@ -50,9 +59,10 @@ public class bookManager implements IBookService{
         if(x != null)
             books.remove(x);
         else
-            throw new IllegalArgumentException("Khong tim thay sach voi ID: " + bookId);
+            throw new IllegalArgumentException("Không tìm thấy sách với ID: " + bookId);
     }
 
+    // Update Book
     @Override
     public void updateBook(int bookId, String name, String genre, String author,
                           int length, int year, int quantity) {
@@ -80,23 +90,23 @@ public class bookManager implements IBookService{
             else x.setUnavailable();
         }
         else {
-            throw new IllegalArgumentException("Khong tim thay sach voi ID: " + bookId);
+            throw new IllegalArgumentException("Không tìm thấy sách với ID: " + bookId);
         }
     }
 
-    // Update book quantity
+    // Update Book Quantity
     @Override
     public void updateBookQuantity(int bookId,int quantity)
     {
         if (quantity < 0) {
-            throw new IllegalArgumentException("So luong sach khong the am");
+            throw new IllegalArgumentException("Số lượng sách không thể âm");
         }
         
         Book x = findBookById(bookId);
         if(x != null)
             x.setQuantity(quantity);
         else
-            throw new IllegalArgumentException("Khong tim thay sach voi ID: " + bookId);
+            throw new IllegalArgumentException("Không tìm thấy sách với ID: " + bookId);
     }
     
     // ======= Find Book function =======
@@ -111,6 +121,8 @@ public class bookManager implements IBookService{
         }
         return null;
     }
+    
+   
     @Override
     public List<Book> searchByName(String name) {
         if(name == null || name.trim().isEmpty()) {
@@ -122,6 +134,7 @@ public class bookManager implements IBookService{
             .collect(Collectors.toList());
     }
     
+   
     @Override
     public List<Book> searchByAuthor(String author) {
         if(author == null || author.trim().isEmpty()) {
@@ -132,6 +145,7 @@ public class bookManager implements IBookService{
             .filter(b -> b.getAuthor().toLowerCase().contains(searchTerm))
             .collect(Collectors.toList());
     }
+    
     
     @Override
     public List<Book> searchByGenre(String genre) {
@@ -144,6 +158,7 @@ public class bookManager implements IBookService{
     }
     
     // ======= Get Information =======
+    
     @Override
     public int getTotalBooks() {
         return books.stream()
@@ -155,6 +170,7 @@ public class bookManager implements IBookService{
     public List<Book> getAllBooks() {
         return books; 
     }
+    
     @Override
     public int getAvailableBooks() {
         return books.stream()
@@ -171,7 +187,9 @@ public class bookManager implements IBookService{
                 Collectors.summingInt(Book::getQuantity)
             ));
     }
+    
     // Show all book
+    
     public void showBooksInformation()
     {
         for(Book x: books)

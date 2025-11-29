@@ -34,7 +34,13 @@ public class Librarian extends User {
 
     public void setStartDate(String startDate) {
         if (startDate == null || startDate.trim().isEmpty()) {
-            throw new IllegalArgumentException("Start date khong duoc de trong");
+            throw new IllegalArgumentException("Ngày bắt đầu không được để trống.");
+        }
+        try{
+            LocalDate.parse(startDate);
+            this.startDate = startDate;
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Định dạng ngày không hợp lệ. Vui lòng sử dụng định dạng YYYY-MM-DD.");
         }
         try{
             LocalDate.parse(startDate);
@@ -50,12 +56,12 @@ public class Librarian extends User {
 
     @Override
     public void displayInformation() {
-        System.out.println("Librarian ID: " + getUserID());
-        System.out.println("Name: " + getName());
-        System.out.println("Phone: " + getPhoneNumber());
+        System.out.println("Mã thủ thư: " + getUserID());
+        System.out.println("Tên: " + getName());
+        System.out.println("Số điện thoại: " + getPhoneNumber());
         System.out.println("Email: " + getEmail());
-        System.out.println("Address: " + getAddress());
-        System.out.println("Working Status: " + (this.workingStatus ? "Working" : "Not Working"));
-        System.out.println("Start Date: " + this.startDate);
+        System.out.println("Địa chỉ: " + getAddress());
+        System.out.println("Trạng thái làm việc: " + (this.workingStatus ? "Đang làm việc" : "Không làm việc"));
+        System.out.println("Ngày bắt đầu: " + this.startDate);
     }
 }

@@ -1,14 +1,13 @@
 package library.GUI;
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import javax.swing.*;
 
 public class MainFrame extends JFrame {
 
     private JPanel contentPanel;
     private CardLayout cardLayout;
+    private StatsPanel statsPanel;
 
     public MainFrame() {
         initializeUI();
@@ -30,8 +29,9 @@ public class MainFrame extends JFrame {
         contentPanel = new JPanel(cardLayout);
         contentPanel.setBackground(Color.WHITE);
 
-        // Add Panels
-        contentPanel.add(new StatsPanel(), "STATS");
+        // Add Panels (keep reference to statsPanel so we can refresh)
+        statsPanel = new StatsPanel();
+        contentPanel.add(statsPanel, "STATS");
         contentPanel.add(new BookPanel(), "BOOKS");
         contentPanel.add(new ReaderPanel(), "READERS");
         contentPanel.add(new LoanPanel(), "LOANS");
@@ -88,7 +88,13 @@ public class MainFrame extends JFrame {
         button.setFont(new Font("Arial", Font.PLAIN, 14));
         button.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
 
-        button.addActionListener(e -> cardLayout.show(contentPanel, cardName));
+        button.addActionListener(e -> {
+            // If navigating to stats, refresh the stats panel first so numbers are up-to-date
+            if ("STATS".equals(cardName) && statsPanel != null) {
+                statsPanel.refreshStats();
+            }
+            cardLayout.show(contentPanel, cardName);
+        });
 
         return button;
     }
@@ -104,5 +110,12 @@ public class MainFrame extends JFrame {
         SwingUtilities.invokeLater(() -> {
             new MainFrame().setVisible(true);
         });
+    }
+
+    // Allow other panels to request a stats refresh
+    public void refreshStats() {
+        if (statsPanel != null) {
+            statsPanel.refreshStats();
+        }
     }
 }

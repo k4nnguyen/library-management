@@ -1,5 +1,6 @@
 package library.Manager;
 
+<<<<<<< HEAD
 import library.Service.ILoanService;
 import library.Model.Loan;
 import library.Model.Reader;
@@ -7,6 +8,15 @@ import library.Model.Book;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
+=======
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
+import library.Model.Book;
+import library.Model.Loan;
+import library.Model.Reader;
+import library.Service.ILoanService;
+>>>>>>> 78199628859bf9b17831ddf00263fcf110c026bb
 
 public class loanManager implements ILoanService{
     private final List<Loan> loans;
@@ -14,6 +24,15 @@ public class loanManager implements ILoanService{
     public loanManager(){
         this.loans = new ArrayList<>();
     }
+<<<<<<< HEAD
+=======
+
+    // Construct with existing loans (e.g., loaded from persistence)
+    public loanManager(List<Loan> initialLoans) {
+        this.loans = new ArrayList<>();
+        if (initialLoans != null) this.loans.addAll(initialLoans);
+    }
+>>>>>>> 78199628859bf9b17831ddf00263fcf110c026bb
     
     // ========== Loan Operations ==========
     
