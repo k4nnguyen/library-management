@@ -1,10 +1,10 @@
 package library.Model;
-public class Book {
+public class Book implements Borrowable, Displayable{
     private String bookName,genre,author;
     private int bookLength,publishYear,bookQuantity;
     private final int bookID;
     private Boolean available;
-    // Constructor
+    //  ==================== Constructor ====================
     public Book(){
         this.bookName = "";
         this.bookID = 0;
@@ -26,7 +26,7 @@ public class Book {
         setPublishYear(publishYear);
         setQuantity(bookQuantity);
     }
-    // Set and Get
+    //  ==================== Setter and Getter ====================
     public final void setBookName(String bookName)
     {
         if(!bookName.equals(""))
@@ -109,10 +109,61 @@ public class Book {
     public void setUnavailable() {
         this.available = false;
     }
-    public void displayInformation(){
-        String s = "ID: " + String.format("%02d",this.bookID) + "\nTên sách: " + this.bookName + "\nThể loại: " + this.genre + "\nTác giả: " + this.author + "\nNăm xuất bản: " + this.publishYear +  "\nSố lượng trang: " + this.bookLength;
-        System.out.println(s);
+
+    @Override
+    public boolean isAvailable() {
+        return this.available != null && this.available;
+    }
+    
+    @Override
+    public boolean canBorrow() {
+        return isAvailable() && this.bookQuantity > 0;
+    }
+    
+    @Override
+    public boolean borrow() {
+        if(canBorrow()) {
+            setQuantity(this.bookQuantity - 1);
+            return true;
+        }
+        return false;
+    }
+    
+    @Override
+    public void returnItem() {
+        setQuantity(this.bookQuantity + 1);
+    }
+    
+    @Override
+    public String getItemName() {
+        return this.bookName;
     }
 
+    @Override
+    public int getItemID() {
+        return this.bookID;
+    }
+
+    @Override
+    public void displayInformation() {
+        String status = isAvailable() ? "Có sẵn" : "Không có sẵn";
+        System.out.println("=== THÔNG TIN SÁCH ===");
+        System.out.println("ID: " + String.format("%02d", this.bookID));
+        System.out.println("Tên sách: " + this.bookName);
+        System.out.println("Thể loại: " + this.genre);
+        System.out.println("Tác giả: " + this.author);
+        System.out.println("Năm xuất bản: " + this.publishYear);
+        System.out.println("Số trang: " + this.bookLength);
+        System.out.println("Số lượng: " + this.bookQuantity);
+        System.out.println("Trạng thái: " + status);
+        System.out.println("======================");
+    }
+    
+    @Override
+    public String getDisplayString() {
+        return String.format("[%02d] %s - %s (%d cuốn)", 
+            bookID, bookName, author, bookQuantity);
+    }
+    
 }
 //
