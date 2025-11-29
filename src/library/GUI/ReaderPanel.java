@@ -1,25 +1,14 @@
 package library.GUI;
 
 import java.awt.*;
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
-import java.util.List;
-import java.util.regex.Pattern;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import library.Manager.dataManager;
-import library.Model.Reader;
 
 public class ReaderPanel extends JPanel {
 
     private JTable readerTable;
     private DefaultTableModel tableModel;
     private JTextField searchField;
-    private JComboBox<String> searchOption;
-    private List<Reader> readers;
-
-    // Phone pattern matches User.PHONE_REGEX = "\\d{10}"
-    private static final Pattern PHONE_PATTERN = Pattern.compile("\\d{10}");
 
     public ReaderPanel() {
         initializeUI();
@@ -40,11 +29,8 @@ public class ReaderPanel extends JPanel {
 
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         searchPanel.setBackground(Color.WHITE);
-        String[] options = {"Mã ĐG", "Họ Tên", "Năm Sinh", "Giới Tính", "SĐT", "Địa Chỉ"};
-        searchOption = new JComboBox<>(options);
-        searchField = new JTextField(16);
+        searchField = new JTextField(20);
         JButton searchButton = new JButton("Tìm kiếm");
-        searchPanel.add(searchOption);
         searchPanel.add(new JLabel("Tìm kiếm:"));
         searchPanel.add(searchField);
         searchPanel.add(searchButton);
@@ -88,87 +74,6 @@ public class ReaderPanel extends JPanel {
         buttonPanel.add(deleteButton);
 
         add(buttonPanel, BorderLayout.SOUTH);
-
-        // load data
-        readers = dataManager.loadReaders();
-        populateTable();
-
-        // search action with filter option
-        searchButton.addActionListener(e -> {
-            String q = searchField.getText().trim();
-            String opt = (String) searchOption.getSelectedItem();
-            if (q.isEmpty()) {
-                populateTable();
-                return;
-            }
-            tableModel.setRowCount(0);
-            String qLower = q.toLowerCase();
-            for (Reader r : readers) {
-                switch (opt) {
-                    case "Mã ĐG":
-                        if (r.getUserID() != null && r.getUserID().toLowerCase().contains(qLower))
-                            tableModel.addRow(rowFor(r));
-                        break;
-                    case "Họ Tên":
-                        if (r.getName() != null && r.getName().toLowerCase().contains(qLower))
-                            tableModel.addRow(rowFor(r));
-                        break;
-                    case "Năm Sinh":
-                        if (r.getDob() != null) {
-                            // if user entered a year number, compare year; otherwise compare full date string
-                            try {
-                                int year = Integer.parseInt(q);
-                                if (r.getDob().getYear() == year) tableModel.addRow(rowFor(r));
-                            } catch (NumberFormatException ex) {
-                                if (r.getDob().toString().toLowerCase().contains(qLower)) tableModel.addRow(rowFor(r));
-                            }
-                        }
-                        break;
-                    case "Giới Tính":
-                        if (r.getGender() != null && r.getGender().toLowerCase().contains(qLower))
-                            tableModel.addRow(rowFor(r));
-                        break;
-                    case "SĐT":
-                        if (r.getPhoneNumber() != null && r.getPhoneNumber().contains(q))
-                            tableModel.addRow(rowFor(r));
-                        break;
-                    case "Địa Chỉ":
-                        if (r.getAddress() != null && r.getAddress().toLowerCase().contains(qLower))
-                            tableModel.addRow(rowFor(r));
-                        break;
-                    default:
-                        if ((r.getName() != null && r.getName().toLowerCase().contains(qLower)) ||
-                            (r.getUserID() != null && r.getUserID().toLowerCase().contains(qLower))) {
-                            tableModel.addRow(rowFor(r));
-                        }
-                }
-            }
-        });
-    }
-
-    private void populateTable() {
-        tableModel.setRowCount(0);
-        for (Reader r : readers) {
-            tableModel.addRow(new Object[] {
-                    r.getUserID(),
-                    r.getName(),
-                    (r.getDob() == null) ? "" : r.getDob().toString(),
-                    (r.getGender() == null) ? "" : r.getGender(),
-                    r.getPhoneNumber(),
-                    r.getAddress()
-            });
-        }
-    }
-
-    private Object[] rowFor(Reader r) {
-        return new Object[] {
-            r.getUserID(),
-            r.getName(),
-            (r.getDob() == null) ? "" : r.getDob().toString(),
-            (r.getGender() == null) ? "" : r.getGender(),
-            r.getPhoneNumber(),
-            r.getAddress()
-        };
     }
 
     private void showAddReaderDialog() {
@@ -176,45 +81,14 @@ public class ReaderPanel extends JPanel {
         dialog.setVisible(true);
 
         if (dialog.isSucceeded()) {
-            try {
-                String name = dialog.getReaderName().trim();
-                String dobStr = dialog.getDob().trim();
-                String gender = dialog.getGender();
-                String phone = dialog.getPhone().trim();
-                String address = dialog.getAddress().trim();
-
-                // validate dob
-                LocalDate dob = null;
-                try {
-                    if (!dobStr.isEmpty()) dob = LocalDate.parse(dobStr);
-                } catch (DateTimeParseException ex) {
-                    JOptionPane.showMessageDialog(this, "Ngày sinh phải có định dạng YYYY-MM-DD.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                // validate phone
-                if (!PHONE_PATTERN.matcher(phone).matches()) {
-                    JOptionPane.showMessageDialog(this, "SĐT phải là 10 chữ số.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                int idNum = dataManager.nextReaderNumber(readers);
-                String username = "reader" + idNum;
-                String password = "pass123";
-                Reader r = new Reader(idNum, name, phone, address, username, password, dob, gender);
-                readers.add(r);
-                dataManager.saveReaders(readers);
-                populateTable();
-
-                // notify main frame to refresh stats
-                java.awt.Window win = SwingUtilities.getWindowAncestor(this);
-                if (win instanceof MainFrame) {
-                    ((MainFrame) win).refreshStats();
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Lỗi khi thêm độc giả:\n" + ex.toString(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-            }
+            tableModel.addRow(new Object[] {
+                    "Mới", // Placeholder
+                    dialog.getReaderName(),
+                    dialog.getDob(),
+                    dialog.getGender(),
+                    dialog.getPhone(),
+                    dialog.getAddress()
+            });
         }
     }
 
@@ -222,59 +96,23 @@ public class ReaderPanel extends JPanel {
         int selectedRow = readerTable.getSelectedRow();
         if (selectedRow >= 0) {
             String id = (String) tableModel.getValueAt(selectedRow, 0);
-            Reader target = null;
-            for (Reader r : readers) if (r.getUserID().equals(id)) { target = r; break; }
-            if (target == null) {
-                JOptionPane.showMessageDialog(this, "Không tìm thấy độc giả.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            String name = target.getName();
-            String dob = (target.getDob() == null) ? "" : target.getDob().toString();
-            String gender = target.getGender();
-            String phone = target.getPhoneNumber();
-            String address = target.getAddress();
+            String name = (String) tableModel.getValueAt(selectedRow, 1);
+            String dob = (String) tableModel.getValueAt(selectedRow, 2);
+            String gender = (String) tableModel.getValueAt(selectedRow, 3);
+            String phone = (String) tableModel.getValueAt(selectedRow, 4);
+            String address = (String) tableModel.getValueAt(selectedRow, 5);
 
-            ReaderDialog dialog = new ReaderDialog((Frame) SwingUtilities.getWindowAncestor(this), "Sửa Thông Tin Độc Giả");
+            ReaderDialog dialog = new ReaderDialog((Frame) SwingUtilities.getWindowAncestor(this),
+                    "Sửa Thông Tin Độc Giả");
             dialog.setReaderData(name, dob, gender, phone, address);
             dialog.setVisible(true);
 
             if (dialog.isSucceeded()) {
-                try {
-                    String newName = dialog.getReaderName().trim();
-                    String newDobStr = dialog.getDob().trim();
-                    String newGender = dialog.getGender();
-                    String newPhone = dialog.getPhone().trim();
-                    String newAddress = dialog.getAddress().trim();
-
-                    LocalDate newDob = null;
-                    try {
-                        if (!newDobStr.isEmpty()) newDob = LocalDate.parse(newDobStr);
-                    } catch (DateTimeParseException ex) {
-                        JOptionPane.showMessageDialog(this, "Ngày sinh phải có định dạng YYYY-MM-DD.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                    if (!PHONE_PATTERN.matcher(newPhone).matches()) {
-                        JOptionPane.showMessageDialog(this, "SĐT phải là 10 chữ số.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-
-                    target.setName(newName);
-                    target.setDob(newDob);
-                    target.setGender(newGender);
-                    target.setPhoneNumber(newPhone);
-                    target.setAddress(newAddress);
-
-                    dataManager.saveReaders(readers);
-                    populateTable();
-
-                    java.awt.Window win = SwingUtilities.getWindowAncestor(this);
-                    if (win instanceof MainFrame) {
-                        ((MainFrame) win).refreshStats();
-                    }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(this, "Lỗi khi sửa độc giả:\n" + ex.toString(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-                }
+                tableModel.setValueAt(dialog.getReaderName(), selectedRow, 1);
+                tableModel.setValueAt(dialog.getDob(), selectedRow, 2);
+                tableModel.setValueAt(dialog.getGender(), selectedRow, 3);
+                tableModel.setValueAt(dialog.getPhone(), selectedRow, 4);
+                tableModel.setValueAt(dialog.getAddress(), selectedRow, 5);
             }
         } else {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn độc giả để sửa!", "Thông báo",
@@ -288,24 +126,7 @@ public class ReaderPanel extends JPanel {
             int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa độc giả này?", "Xác nhận",
                     JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
-                String id = (String) tableModel.getValueAt(selectedRow, 0);
-                Reader target = null;
-                for (Reader r : readers) if (r.getUserID().equals(id)) { target = r; break; }
-                if (target != null) {
-                    try {
-                        readers.remove(target);
-                        dataManager.saveReaders(readers);
-                        populateTable();
-
-                        java.awt.Window win = SwingUtilities.getWindowAncestor(this);
-                        if (win instanceof MainFrame) {
-                            ((MainFrame) win).refreshStats();
-                        }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                        JOptionPane.showMessageDialog(this, "Lỗi khi xóa độc giả:\n" + ex.toString(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-                    }
-                }
+                tableModel.removeRow(selectedRow);
             }
         } else {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn độc giả để xóa!", "Thông báo",
