@@ -31,8 +31,6 @@ public class BookPanel extends JPanel {
         searchPanel.setBackground(Color.WHITE);
         searchField = new JTextField(20);
         JButton searchButton = new JButton("Tìm kiếm");
-        searchPanel.add(new JLabel("Tìm kiếm:"));
-        searchPanel.add(searchField);
         searchPanel.add(searchButton);
 
         headerPanel.add(titleLabel, BorderLayout.WEST);
@@ -42,7 +40,12 @@ public class BookPanel extends JPanel {
 
         // Table
         String[] columnNames = { "Mã Sách", "Tên Sách", "Tác Giả", "Thể Loại", "Năm XB", "Số Lượng" };
-        tableModel = new DefaultTableModel(columnNames, 0);
+        tableModel = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         bookTable = new JTable(tableModel);
         bookTable.setRowHeight(25);
         bookTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
