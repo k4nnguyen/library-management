@@ -80,7 +80,7 @@ public class BookPanel extends JPanel {
 
         if (dialog.isSucceeded()) {
             tableModel.addRow(new Object[] {
-                    "Mới", // Placeholder for ID until reload
+                    dialog.getBookId(),
                     dialog.getBookTitle(),
                     dialog.getAuthor(),
                     dialog.getCategory(),
@@ -101,7 +101,7 @@ public class BookPanel extends JPanel {
             int quantity = Integer.parseInt(tableModel.getValueAt(selectedRow, 5).toString());
 
             BookDialog dialog = new BookDialog((Frame) SwingUtilities.getWindowAncestor(this), "Sửa Thông Tin Sách");
-            dialog.setBookData(title, author, category, year, quantity);
+            dialog.setBookData(id, title, author, category, year, quantity);
             dialog.setVisible(true);
 
             if (dialog.isSucceeded()) {
