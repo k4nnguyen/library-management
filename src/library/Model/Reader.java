@@ -91,9 +91,4 @@ public class Reader extends User implements Displayable, Serializable {
     public String getDisplayString() {
         return String.format("%s (%s) - %d loans", getName(), getUserID(), loanHistory.size());
     }
-
-    @Override
-    public String getDisplayString() {
-        return String.format("%s (%s) - %d loans", getName(), getUserID(), loanHistory.size());
-    }
 }
