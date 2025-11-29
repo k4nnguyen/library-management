@@ -1,6 +1,7 @@
 package library.GUI;
 
 import java.awt.*;
+import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -31,8 +32,6 @@ public class BookPanel extends JPanel {
         searchPanel.setBackground(Color.WHITE);
         searchField = new JTextField(20);
         JButton searchButton = new JButton("Tìm kiếm");
-        searchPanel.add(new JLabel("Tìm kiếm:"));
-        searchPanel.add(searchField);
         searchPanel.add(searchButton);
 
         headerPanel.add(titleLabel, BorderLayout.WEST);
@@ -42,7 +41,18 @@ public class BookPanel extends JPanel {
 
         // Table
         String[] columnNames = { "Mã Sách", "Tên Sách", "Tác Giả", "Thể Loại", "Năm XB", "Số Lượng" };
-        tableModel = new DefaultTableModel(columnNames, 0);
+        tableModel = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        tableModel = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         bookTable = new JTable(tableModel);
         bookTable.setRowHeight(25);
         bookTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
@@ -77,7 +87,7 @@ public class BookPanel extends JPanel {
 
         if (dialog.isSucceeded()) {
             tableModel.addRow(new Object[] {
-                    dialog.getBookId(),
+                    "Mới", // Placeholder for ID until reload
                     dialog.getBookTitle(),
                     dialog.getAuthor(),
                     dialog.getCategory(),
@@ -98,7 +108,7 @@ public class BookPanel extends JPanel {
             int quantity = Integer.parseInt(tableModel.getValueAt(selectedRow, 5).toString());
 
             BookDialog dialog = new BookDialog((Frame) SwingUtilities.getWindowAncestor(this), "Sửa Thông Tin Sách");
-            dialog.setBookData(id, title, author, category, year, quantity);
+            dialog.setBookData(title, author, category, year, quantity);
             dialog.setVisible(true);
 
             if (dialog.isSucceeded()) {

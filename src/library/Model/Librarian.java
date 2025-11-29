@@ -42,8 +42,13 @@ public class Librarian extends User {
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("Định dạng ngày không hợp lệ. Vui lòng sử dụng định dạng YYYY-MM-DD.");
         }
+        try{
+            LocalDate.parse(startDate);
+            this.startDate = startDate;
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Invalid start date format. Please use YYYY-MM-DD.");
+        }
     }
-    
     @Override
     public String getUserID() {
         return this.id;
