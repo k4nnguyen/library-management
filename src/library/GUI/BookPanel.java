@@ -68,15 +68,10 @@ public class BookPanel extends JPanel {
         JButton addButton = createButton("Thêm", new Color(0, 150, 0));
         addButton.addActionListener(e -> showAddBookDialog());
 
-        addButton.addActionListener(e -> showAddBookDialog());
-
         JButton editButton = createButton("Sửa", new Color(255, 140, 0));
         editButton.addActionListener(e -> showEditBookDialog());
 
-        editButton.addActionListener(e -> showEditBookDialog());
-
         JButton deleteButton = createButton("Xóa", new Color(200, 0, 0));
-        deleteButton.addActionListener(e -> deleteBook());
         deleteButton.addActionListener(e -> deleteBook());
 
         buttonPanel.add(addButton);
