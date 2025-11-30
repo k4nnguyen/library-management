@@ -261,7 +261,7 @@ public class LoanPanel extends JPanel {
 
         // Action
         saveButton.addActionListener(e -> createLoan(borrowReaderCombo, borrowBookCombo,
-            borrowDateField, expireDateField));
+                borrowDateField, expireDateField));
 
         panel.add(formPanel);
         return panel;
@@ -269,8 +269,10 @@ public class LoanPanel extends JPanel {
 
     private void populateBorrowChoices() {
         // ensure managers
-        if (userMgr == null) userMgr = new UserManager();
-        if (bookMgr == null) bookMgr = new BookManager(DataManager.loadBooks());
+        if (userMgr == null)
+            userMgr = new UserManager();
+        if (bookMgr == null)
+            bookMgr = new BookManager(DataManager.loadBooks());
 
         // populate reader combo with "ID - Name" entries
         borrowReaderCombo.removeAllItems();
@@ -290,8 +292,10 @@ public class LoanPanel extends JPanel {
     private void createLoan(JComboBox<String> readerCombo, JComboBox<String> bookCombo,
             JTextField borrowDateField, JTextField expireDateField) {
         try {
-            String readerRaw = (readerCombo.getEditor().getItem() == null) ? "" : readerCombo.getEditor().getItem().toString().trim();
-            String bookRaw = (bookCombo.getEditor().getItem() == null) ? "" : bookCombo.getEditor().getItem().toString().trim();
+            String readerRaw = (readerCombo.getEditor().getItem() == null) ? ""
+                    : readerCombo.getEditor().getItem().toString().trim();
+            String bookRaw = (bookCombo.getEditor().getItem() == null) ? ""
+                    : bookCombo.getEditor().getItem().toString().trim();
 
             // If item is in form "ID - Name", extract ID part
             String readerId = readerRaw;
@@ -314,7 +318,8 @@ public class LoanPanel extends JPanel {
             }
 
             // Find reader (use injected managers)
-            if (userMgr == null) userMgr = new UserManager();
+            if (userMgr == null)
+                userMgr = new UserManager();
             Reader reader = (Reader) userMgr.findUserById(readerId);
             if (reader == null) {
                 JOptionPane.showMessageDialog(this,
@@ -500,7 +505,7 @@ public class LoanPanel extends JPanel {
 
             if (confirm == JOptionPane.YES_OPTION) {
                 try {
-                        loanMgr.returnLoan(foundLoan[0]);
+                    loanMgr.returnLoan(foundLoan[0]);
                     JOptionPane.showMessageDialog(this,
                             "Đã trả sách thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
 
