@@ -16,7 +16,7 @@ số lượng sách theo thể loại cũng như tạo báo cáo khi quá hạn 
 
 ## Chức Năng Hệ Thống Chi Tiết
 
-### 1. Quản Lý Thông Tin Độc Giả (Class: User)
+### 1. Quản Lý Thông Tin Độc Giả 
 
 #### Chức năng:
 
@@ -26,7 +26,7 @@ số lượng sách theo thể loại cũng như tạo báo cáo khi quá hạn 
 - **Tìm kiếm**: Theo ID, tên, số điện thoại
 - **Quản lý thẻ**: Kích hoạt/khóa thẻ độc giả
 
-### 2. Quản Lý Kho Sách (Class: Book)
+### 2. Quản Lý Kho Sách 
 
 #### Chức năng:
 
@@ -36,7 +36,7 @@ số lượng sách theo thể loại cũng như tạo báo cáo khi quá hạn 
 - **Tìm kiếm sách**: Đa điều kiện (tên, tác giả, thể loại)
 - **Quản lý số lượng**: Tự động cập nhật khi mượn/trả
 
-### 3. Quản Lý Mượn/Trả Sách (Class: PhieuMuon)
+### 3. Quản Lý Mượn/Trả Sách 
 
 #### Quy Trình Mượn Sách:
 
@@ -56,7 +56,7 @@ số lượng sách theo thể loại cũng như tạo báo cáo khi quá hạn 
 
 - **Thống kê sách**: Số lượng theo thể loại, tình trạng
 - **Thống kê độc giả**: Phân tích theo tình trạng thẻ
-- **Báo cáo mượn/trả**: Thống kê lượt mượn, tỷ lệ trả đúng hạn
+- **Thống kê phiếu mượn**: Thống kê số phiếu mượn
 - **Báo cáo quá hạn**: Danh sách phiếu mượn quá hạn
 
 ## Danh sách Object cần tạo
