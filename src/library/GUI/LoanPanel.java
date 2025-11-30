@@ -256,7 +256,7 @@ public class LoanPanel extends JPanel {
                 return;
             }
 
-            // Refresh managers from persistence to pick up recent changes
+            // Refresh managers
             bookMgr = new bookManager(dataManager.loadBooks());
             userMgr = new userManager();
 
