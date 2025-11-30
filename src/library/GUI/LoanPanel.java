@@ -21,6 +21,10 @@ public class LoanPanel extends JPanel {
     private JComboBox<String> searchOption;
     private JTextField searchField;
 
+    // borrow form combos
+    private JComboBox<String> borrowReaderCombo;
+    private JComboBox<String> borrowBookCombo;
+
     // Managers
     private loanManager loanMgr;
     private bookManager bookMgr;
@@ -29,6 +33,15 @@ public class LoanPanel extends JPanel {
 
     public LoanPanel() {
         initializeManagers();
+        initializeUI();
+        loadLoans();
+    }
+
+    // New constructor to accept centralized managers
+    public LoanPanel(library.Manager.loanManager loanMgr, library.Manager.bookManager bookMgr, library.Manager.userManager userMgr) {
+        this.loanMgr = loanMgr;
+        this.bookMgr = bookMgr;
+        this.userMgr = userMgr;
         initializeUI();
         loadLoans();
     }
@@ -57,6 +70,15 @@ public class LoanPanel extends JPanel {
         tabbedPane.addTab("Danh Sách Phiếu Mượn", createListPanel());
         tabbedPane.addTab("Tạo Phiếu Mượn", createBorrowPanel());
         tabbedPane.addTab("Trả Sách", createReturnPanel());
+
+        // refresh borrow form choices when tab selected
+        tabbedPane.addChangeListener(e -> {
+            int idx = tabbedPane.getSelectedIndex();
+            String title = tabbedPane.getTitleAt(idx);
+            if ("Tạo Phiếu Mượn".equals(title)) {
+                populateBorrowChoices();
+            }
+        });
 
         add(tabbedPane, BorderLayout.CENTER);
     }
@@ -208,8 +230,13 @@ public class LoanPanel extends JPanel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         // Fields
-        JTextField readerIdField = new JTextField(20);
-        JTextField bookIdField = new JTextField(20);
+        borrowReaderCombo = new JComboBox<>();
+        borrowReaderCombo.setEditable(true);
+        // show at most 5 items in the popup so large lists scroll
+        borrowReaderCombo.setMaximumRowCount(5);
+        borrowBookCombo = new JComboBox<>();
+        borrowBookCombo.setEditable(true);
+        borrowBookCombo.setMaximumRowCount(5);
         JTextField borrowDateField = new JTextField(20);
         JTextField expireDateField = new JTextField(20);
 
@@ -218,8 +245,8 @@ public class LoanPanel extends JPanel {
         expireDateField.setText(LocalDate.now().plusDays(14).toString());
 
         // Add components
-        addLabelAndField(formPanel, "Mã Độc Giả:", readerIdField, gbc, 0);
-        addLabelAndField(formPanel, "Mã Sách:", bookIdField, gbc, 1);
+        addLabelAndField(formPanel, "Mã Độc Giả:", borrowReaderCombo, gbc, 0);
+        addLabelAndField(formPanel, "Mã Sách:", borrowBookCombo, gbc, 1);
         addLabelAndField(formPanel, "Ngày Mượn (YYYY-MM-DD):", borrowDateField, gbc, 2);
         addLabelAndField(formPanel, "Hạn Trả (YYYY-MM-DD):", expireDateField, gbc, 3);
 
@@ -233,18 +260,48 @@ public class LoanPanel extends JPanel {
         formPanel.add(saveButton, gbc);
 
         // Action
-        saveButton.addActionListener(e -> createLoan(readerIdField, bookIdField,
-                borrowDateField, expireDateField));
+        saveButton.addActionListener(e -> createLoan(borrowReaderCombo, borrowBookCombo,
+            borrowDateField, expireDateField));
 
         panel.add(formPanel);
         return panel;
     }
 
-    private void createLoan(JTextField readerIdField, JTextField bookIdField,
+    private void populateBorrowChoices() {
+        // ensure managers
+        if (userMgr == null) userMgr = new userManager();
+        if (bookMgr == null) bookMgr = new bookManager(dataManager.loadBooks());
+
+        // populate reader combo with "ID - Name" entries
+        borrowReaderCombo.removeAllItems();
+        for (Reader r : userMgr.getAllReaders()) {
+            String item = r.getUserID() + " - " + r.getName();
+            borrowReaderCombo.addItem(item);
+        }
+
+        // populate book combo with "ID - Name" entries
+        borrowBookCombo.removeAllItems();
+        for (Book b : bookMgr.getAllBooks()) {
+            String item = b.getBookID() + " - " + b.getBookName();
+            borrowBookCombo.addItem(item);
+        }
+    }
+
+    private void createLoan(JComboBox<String> readerCombo, JComboBox<String> bookCombo,
             JTextField borrowDateField, JTextField expireDateField) {
         try {
-            String readerId = readerIdField.getText().trim();
-            String bookIdStr = bookIdField.getText().trim();
+            String readerRaw = (readerCombo.getEditor().getItem() == null) ? "" : readerCombo.getEditor().getItem().toString().trim();
+            String bookRaw = (bookCombo.getEditor().getItem() == null) ? "" : bookCombo.getEditor().getItem().toString().trim();
+
+            // If item is in form "ID - Name", extract ID part
+            String readerId = readerRaw;
+            if (readerRaw.contains(" - ")) {
+                readerId = readerRaw.substring(0, readerRaw.indexOf(" - ")).trim();
+            }
+            String bookIdStr = bookRaw;
+            if (bookRaw.contains(" - ")) {
+                bookIdStr = bookRaw.substring(0, bookRaw.indexOf(" - ")).trim();
+            }
             String borrowDateStr = borrowDateField.getText().trim();
             String expireDateStr = expireDateField.getText().trim();
 
@@ -256,11 +313,8 @@ public class LoanPanel extends JPanel {
                 return;
             }
 
-            // Refresh managers
-            bookMgr = new bookManager(dataManager.loadBooks());
-            userMgr = new userManager();
-
-            // Find reader
+            // Find reader (use injected managers)
+            if (userMgr == null) userMgr = new userManager();
             Reader reader = (Reader) userMgr.findUserById(readerId);
             if (reader == null) {
                 JOptionPane.showMessageDialog(this,
@@ -306,8 +360,8 @@ public class LoanPanel extends JPanel {
                     "Thành công", JOptionPane.INFORMATION_MESSAGE);
 
             // Clear fields
-            readerIdField.setText("");
-            bookIdField.setText("");
+            readerCombo.getEditor().setItem("");
+            bookCombo.getEditor().setItem("");
             borrowDateField.setText(LocalDate.now().toString());
             expireDateField.setText(LocalDate.now().plusDays(14).toString());
 

@@ -3,6 +3,7 @@ package library.Manager;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 import library.Model.Reader;
 import library.Model.User;
 import library.Service.IUserService;
@@ -18,12 +19,18 @@ public class userManager implements IUserService {
 	@Override
 	public Reader createReader(String name, String phoneNumber, String address, String username, String password,
 			LocalDate dob, String gender, String email) {
+		// email is required and must be valid
+		if (email == null || email.trim().isEmpty()) {
+			throw new IllegalArgumentException("Email không được để trống");
+		}
+		final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
+		if (!EMAIL_PATTERN.matcher(email).matches()) {
+			throw new IllegalArgumentException("Email không đúng định dạng");
+		}
+
 		int idNum = dataManager.nextReaderNumber(readers);
 		Reader r = new Reader(idNum, name, phoneNumber, address, username, password, dob, gender);
-		// Set custom email if provided
-		if (email != null && !email.trim().isEmpty()) {
-			r.setEmail(email);
-		}
+		r.setEmail(email);
 		readers.add(r);
 		dataManager.saveReaders(readers);
 		return r;

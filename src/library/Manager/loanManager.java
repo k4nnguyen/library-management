@@ -7,10 +7,16 @@ import library.Model.Book;
 import library.Model.Loan;
 import library.Model.Reader;
 import library.Service.ILoanService;
+import library.Manager.dataManager;
+import library.Manager.bookManager;
+import library.Manager.userManager;
 
 public class loanManager implements ILoanService {
     private final List<Loan> loans;
     private int nextLoanNumber;
+    // optional refs to other managers so we can persist related data
+    private bookManager bookMgr;
+    private userManager userMgr;
 
     public loanManager() {
         this.loans = dataManager.loadLoans();
@@ -24,6 +30,22 @@ public class loanManager implements ILoanService {
         if (initialLoans != null)
             this.loans.addAll(initialLoans);
         this.nextLoanNumber = calculateNextLoanNumber();
+    }
+
+    // Optional constructor to inject managers
+    public loanManager(bookManager bookMgr, userManager userMgr) {
+        this.loans = dataManager.loadLoans();
+        this.nextLoanNumber = calculateNextLoanNumber();
+        this.bookMgr = bookMgr;
+        this.userMgr = userMgr;
+    }
+
+    public void setBookManager(bookManager bm) {
+        this.bookMgr = bm;
+    }
+
+    public void setUserManager(userManager um) {
+        this.userMgr = um;
     }
 
     private int calculateNextLoanNumber() {
@@ -73,6 +95,13 @@ public class loanManager implements ILoanService {
 
             // Save to persistence
             dataManager.saveLoans(loans);
+            // also persist books/readers if managers available
+            if (bookMgr != null) {
+                dataManager.saveBooks(bookMgr.getBooks());
+            }
+            if (userMgr != null) {
+                dataManager.saveReaders(userMgr.getAllReaders());
+            }
 
             return loan;
         } catch (IllegalStateException | IllegalArgumentException e) {
@@ -97,6 +126,13 @@ public class loanManager implements ILoanService {
 
             // Save to persistence
             dataManager.saveLoans(loans);
+            // also persist books/readers if managers available
+            if (bookMgr != null) {
+                dataManager.saveBooks(bookMgr.getBooks());
+            }
+            if (userMgr != null) {
+                dataManager.saveReaders(userMgr.getAllReaders());
+            }
         } catch (IllegalStateException | IllegalArgumentException e) {
             throw e; // Re-throw validation errors
         } catch (Exception e) {

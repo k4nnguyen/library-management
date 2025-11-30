@@ -19,6 +19,12 @@ public class BookPanel extends JPanel {
         initializeUI();
     }
 
+    // New constructor to accept centralized manager
+    public BookPanel(library.Manager.bookManager manager) {
+        this.manager = manager;
+        initializeUI();
+    }
+
     private void initializeUI() {
         setLayout(new BorderLayout(10, 10));
         setBackground(Color.WHITE);
@@ -91,9 +97,11 @@ public class BookPanel extends JPanel {
 
         add(buttonPanel, BorderLayout.SOUTH);
 
-        // load data and populate
-        List<Book> loaded = dataManager.loadBooks();
-        manager = new bookManager(loaded);
+        // load data and populate (use injected manager if provided)
+        if (manager == null) {
+            List<Book> loaded = dataManager.loadBooks();
+            manager = new bookManager(loaded);
+        }
         populateTable();
 
         // wire search button after manager is ready
