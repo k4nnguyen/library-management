@@ -17,6 +17,9 @@ public class MainFrame extends JFrame {
     private JLabel dateTimeLabel;
     private JLabel welcomeLabel;
     private Timer dateTimeTimer;
+    // keep references to panels so we can trigger refreshes
+    private BookPanel bookPanel;
+    private ReaderPanel readerPanel;
 
     public MainFrame() {
         initializeUI();
@@ -49,8 +52,11 @@ public class MainFrame extends JFrame {
         // Add Panels (keep reference to statsPanel so we can refresh)
         statsPanel = new StatsPanel();
         contentPanel.add(statsPanel, "STATS");
-        contentPanel.add(new BookPanel(bookMgr), "BOOKS");
-        contentPanel.add(new ReaderPanel(userMgr), "READERS");
+        // create panels and keep references
+        bookPanel = new BookPanel(bookMgr, loanMgr);
+        readerPanel = new ReaderPanel(userMgr, loanMgr);
+        contentPanel.add(bookPanel, "BOOKS");
+        contentPanel.add(readerPanel, "READERS");
         contentPanel.add(new LoanPanel(loanMgr, bookMgr, userMgr), "LOANS");
 
         add(contentPanel, BorderLayout.CENTER);
@@ -126,8 +132,7 @@ public class MainFrame extends JFrame {
         button.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
 
         button.addActionListener(e -> {
-            // If navigating to stats, refresh the stats panel first so numbers are
-            // up-to-date
+            // If navigating to stats, refresh the stats panel first so numbers are up-to-date
             if ("STATS".equals(cardName) && statsPanel != null) {
                 statsPanel.refreshStats();
             }
@@ -177,5 +182,14 @@ public class MainFrame extends JFrame {
         if (statsPanel != null) {
             statsPanel.refreshStats();
         }
+    }
+
+    // Allow other parts of the app to refresh books and readers display
+    public void refreshBooks() {
+        if (bookPanel != null) bookPanel.refresh();
+    }
+
+    public void refreshReaders() {
+        if (readerPanel != null) readerPanel.refresh();
     }
 }

@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import library.Manager.dataManager;
+import library.Manager.loanManager;
 import library.Manager.userManager;
 import library.Model.Reader;
 
@@ -19,6 +20,7 @@ public class ReaderPanel extends JPanel {
     private JComboBox<String> searchOption;
     private List<Reader> readers;
     private userManager userMgr;
+    private loanManager loanMgr;
 
     // Phone pattern matches User.PHONE_REGEX = "\\d{10}"
     private static final Pattern PHONE_PATTERN = Pattern.compile("\\d{10}");
@@ -31,7 +33,13 @@ public class ReaderPanel extends JPanel {
 
     // Constructor that accepts an injected userManager (centralized)
     public ReaderPanel(library.Manager.userManager userMgr) {
+        this(userMgr, null);
+    }
+
+    // Constructor that accepts both userManager and loanManager
+    public ReaderPanel(library.Manager.userManager userMgr, library.Manager.loanManager loanMgr) {
         this.userMgr = userMgr;
+        this.loanMgr = loanMgr;
         this.readers = (userMgr != null) ? userMgr.getAllReaders() : null;
         initializeUI();
     }
@@ -103,6 +111,9 @@ public class ReaderPanel extends JPanel {
         // init manager and load data (use injected userMgr if provided)
         if (userMgr == null) {
             userMgr = new userManager();
+        }
+        if (loanMgr == null) {
+            loanMgr = new loanManager();
         }
         if (readers == null) readers = userMgr.getAllReaders();
         populateTable();
@@ -359,6 +370,20 @@ public class ReaderPanel extends JPanel {
                         break;
                     }
                 if (target != null) {
+                    // check active loans for this reader
+                    int activeLoans = 0;
+                    try {
+                        activeLoans = (int) loanMgr.searchByReaderId(target.getUserID()).stream()
+                                .filter(l -> !l.isReturned()).count();
+                    } catch (Exception ex) {
+                        activeLoans = 0;
+                    }
+                    if (activeLoans > 0) {
+                        JOptionPane.showMessageDialog(this,
+                                "Không thể xóa độc giả này vì còn " + activeLoans + " lượt mượn đang hoạt động.", "Lỗi",
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
                     try {
                         userMgr.removeUser(target.getUserID());
                         readers = userMgr.getAllReaders();
@@ -389,5 +414,13 @@ public class ReaderPanel extends JPanel {
         button.setFont(new Font("Arial", Font.BOLD, 12));
         button.setPreferredSize(new Dimension(80, 30));
         return button;
+    }
+
+    // Allow external callers (e.g., MainFrame) to request a refresh
+    public void refresh() {
+        if (userMgr != null) {
+            readers = userMgr.getAllReaders();
+        }
+        populateTable();
     }
 }
