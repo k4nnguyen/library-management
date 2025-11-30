@@ -6,27 +6,31 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface IUserService {
-	// Create a reader 
-	Reader createReader(String name, String phoneNumber, String address, String username, String password, LocalDate dob, String gender);
+    // Create a reader
+    Reader createReader(String name, String phoneNumber, String address, String username, String password,
+            LocalDate dob, String gender, String email);
 
-	// Remove by user id (e.g. R001)
-	void removeUser(String userId);
+    // Remove by user id (e.g. R001)
+    void removeUser(String userId);
 
-	// Update user information
-	void updateUser(User user);
+    // Update user information
+    void updateUser(User user);
 
-	// Lookup
-	User findUserById(String userId);
-	User findUserByUsername(String username);
+    // Lookup
+    User findUserById(String userId);
 
-	// List / search
-	List<User> getAllUsers();
-	List<Reader> getAllReaders();
-	List<User> searchUsers(String query);
+    User findUserByUsername(String username);
 
-	// Authentication
-	boolean authenticate(String username, String password);
+    // List / search
+    List<User> getAllUsers();
 
-	// Statistics
-	int getTotalUsers();
+    List<Reader> getAllReaders();
+
+    List<User> searchUsers(String query);
+
+    // Authentication
+    boolean authenticate(String username, String password);
+
+    // Statistics
+    int getTotalUsers();
 }

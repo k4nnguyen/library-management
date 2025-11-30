@@ -16,9 +16,14 @@ public class userManager implements IUserService {
 	}
 
 	@Override
-	public Reader createReader(String name, String phoneNumber, String address, String username, String password, LocalDate dob, String gender) {
+	public Reader createReader(String name, String phoneNumber, String address, String username, String password,
+			LocalDate dob, String gender, String email) {
 		int idNum = dataManager.nextReaderNumber(readers);
 		Reader r = new Reader(idNum, name, phoneNumber, address, username, password, dob, gender);
+		// Set custom email if provided
+		if (email != null && !email.trim().isEmpty()) {
+			r.setEmail(email);
+		}
 		readers.add(r);
 		dataManager.saveReaders(readers);
 		return r;
@@ -53,13 +58,17 @@ public class userManager implements IUserService {
 
 	@Override
 	public User findUserById(String userId) {
-		for (Reader r : readers) if (r.getUserID().equals(userId)) return r;
+		for (Reader r : readers)
+			if (r.getUserID().equals(userId))
+				return r;
 		return null;
 	}
 
 	@Override
 	public User findUserByUsername(String username) {
-		for (Reader r : readers) if (r.getUsername() != null && r.getUsername().equals(username)) return r;
+		for (Reader r : readers)
+			if (r.getUsername() != null && r.getUsername().equals(username))
+				return r;
 		return null;
 	}
 
@@ -81,8 +90,8 @@ public class userManager implements IUserService {
 		List<User> out = new ArrayList<>();
 		for (Reader u : readers) {
 			if ((u.getName() != null && u.getName().toLowerCase().contains(q)) ||
-				(u.getUsername() != null && u.getUsername().toLowerCase().contains(q)) ||
-				(u.getPhoneNumber() != null && u.getPhoneNumber().contains(q))) {
+					(u.getUsername() != null && u.getUsername().toLowerCase().contains(q)) ||
+					(u.getPhoneNumber() != null && u.getPhoneNumber().contains(q))) {
 				out.add(u);
 			}
 		}

@@ -42,12 +42,12 @@ public class ReaderPanel extends JPanel {
 
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         searchPanel.setBackground(Color.WHITE);
-        String[] options = {"Mã ĐG", "Họ Tên", "Năm Sinh", "Giới Tính", "SĐT", "Địa Chỉ"};
+        String[] options = { "Mã ĐG", "Họ Tên", "Năm Sinh", "Giới Tính", "SĐT", "Email", "Địa Chỉ" };
         searchOption = new JComboBox<>(options);
         searchField = new JTextField(16);
         JButton searchButton = new JButton("Tìm kiếm");
+        searchPanel.add(new JLabel("Tìm theo:"));
         searchPanel.add(searchOption);
-        searchPanel.add(new JLabel("Tìm kiếm:"));
         searchPanel.add(searchField);
         searchPanel.add(searchButton);
 
@@ -57,7 +57,7 @@ public class ReaderPanel extends JPanel {
         add(headerPanel, BorderLayout.NORTH);
 
         // Table
-        String[] columnNames = { "Mã ĐG", "Họ Tên", "Ngày Sinh", "Giới Tính", "SĐT", "Địa Chỉ" };
+        String[] columnNames = { "Mã ĐG", "Họ Tên", "Ngày Sinh", "Giới Tính", "SĐT", "Email", "Địa Chỉ" };
         tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -118,12 +118,15 @@ public class ReaderPanel extends JPanel {
                         break;
                     case "Năm Sinh":
                         if (r.getDob() != null) {
-                            // if user entered a year number, compare year; otherwise compare full date string
+                            // if user entered a year number, compare year; otherwise compare full date
+                            // string
                             try {
                                 int year = Integer.parseInt(q);
-                                if (r.getDob().getYear() == year) tableModel.addRow(rowFor(r));
+                                if (r.getDob().getYear() == year)
+                                    tableModel.addRow(rowFor(r));
                             } catch (NumberFormatException ex) {
-                                if (r.getDob().toString().toLowerCase().contains(qLower)) tableModel.addRow(rowFor(r));
+                                if (r.getDob().toString().toLowerCase().contains(qLower))
+                                    tableModel.addRow(rowFor(r));
                             }
                         }
                         break;
@@ -135,13 +138,17 @@ public class ReaderPanel extends JPanel {
                         if (r.getPhoneNumber() != null && r.getPhoneNumber().contains(q))
                             tableModel.addRow(rowFor(r));
                         break;
+                    case "Email":
+                        if (r.getEmail() != null && r.getEmail().toLowerCase().contains(qLower))
+                            tableModel.addRow(rowFor(r));
+                        break;
                     case "Địa Chỉ":
                         if (r.getAddress() != null && r.getAddress().toLowerCase().contains(qLower))
                             tableModel.addRow(rowFor(r));
                         break;
                     default:
                         if ((r.getName() != null && r.getName().toLowerCase().contains(qLower)) ||
-                            (r.getUserID() != null && r.getUserID().toLowerCase().contains(qLower))) {
+                                (r.getUserID() != null && r.getUserID().toLowerCase().contains(qLower))) {
                             tableModel.addRow(rowFor(r));
                         }
                 }
@@ -158,6 +165,7 @@ public class ReaderPanel extends JPanel {
                     (r.getDob() == null) ? "" : r.getDob().toString(),
                     (r.getGender() == null) ? "" : r.getGender(),
                     r.getPhoneNumber(),
+                    (r.getEmail() == null) ? "" : r.getEmail(),
                     r.getAddress()
             });
         }
@@ -165,12 +173,13 @@ public class ReaderPanel extends JPanel {
 
     private Object[] rowFor(Reader r) {
         return new Object[] {
-            r.getUserID(),
-            r.getName(),
-            (r.getDob() == null) ? "" : r.getDob().toString(),
-            (r.getGender() == null) ? "" : r.getGender(),
-            r.getPhoneNumber(),
-            r.getAddress()
+                r.getUserID(),
+                r.getName(),
+                (r.getDob() == null) ? "" : r.getDob().toString(),
+                (r.getGender() == null) ? "" : r.getGender(),
+                r.getPhoneNumber(),
+                (r.getEmail() == null) ? "" : r.getEmail(),
+                r.getAddress()
         };
     }
 
@@ -184,14 +193,17 @@ public class ReaderPanel extends JPanel {
                 String dobStr = dialog.getDob().trim();
                 String gender = dialog.getGender();
                 String phone = dialog.getPhone().trim();
+                String email = dialog.getEmail().trim();
                 String address = dialog.getAddress().trim();
 
                 // validate dob
                 LocalDate dob = null;
                 try {
-                    if (!dobStr.isEmpty()) dob = LocalDate.parse(dobStr);
+                    if (!dobStr.isEmpty())
+                        dob = LocalDate.parse(dobStr);
                 } catch (DateTimeParseException ex) {
-                    JOptionPane.showMessageDialog(this, "Ngày sinh phải có định dạng YYYY-MM-DD.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Ngày sinh phải có định dạng YYYY-MM-DD.", "Lỗi",
+                            JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
@@ -201,11 +213,16 @@ public class ReaderPanel extends JPanel {
                     return;
                 }
 
+                // validate email - if empty, will use auto-generated; otherwise validate format
+                if (email.isEmpty()) {
+                    email = null; // Will trigger auto-generation in Reader constructor
+                }
+
                 int idNum = dataManager.nextReaderNumber(readers);
                 String username = "reader" + idNum;
                 String password = "pass123";
                 // create via userManager (persists internally)
-                Reader r = userMgr.createReader(name, phone, address, username, password, dob, gender);
+                Reader r = userMgr.createReader(name, phone, address, username, password, dob, gender, email);
                 // reload list and refresh table
                 readers = userMgr.getAllReaders();
                 populateTable();
@@ -217,7 +234,8 @@ public class ReaderPanel extends JPanel {
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Lỗi khi thêm độc giả:\n" + ex.toString(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Lỗi khi thêm độc giả:\n" + ex.toString(), "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -227,7 +245,11 @@ public class ReaderPanel extends JPanel {
         if (selectedRow >= 0) {
             String id = (String) tableModel.getValueAt(selectedRow, 0);
             Reader target = null;
-            for (Reader r : readers) if (r.getUserID().equals(id)) { target = r; break; }
+            for (Reader r : readers)
+                if (r.getUserID().equals(id)) {
+                    target = r;
+                    break;
+                }
             if (target == null) {
                 JOptionPane.showMessageDialog(this, "Không tìm thấy độc giả.", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -236,10 +258,12 @@ public class ReaderPanel extends JPanel {
             String dob = (target.getDob() == null) ? "" : target.getDob().toString();
             String gender = target.getGender();
             String phone = target.getPhoneNumber();
+            String email = (target.getEmail() == null) ? "" : target.getEmail();
             String address = target.getAddress();
 
-            ReaderDialog dialog = new ReaderDialog((Frame) SwingUtilities.getWindowAncestor(this), "Sửa Thông Tin Độc Giả");
-            dialog.setReaderData(name, dob, gender, phone, address);
+            ReaderDialog dialog = new ReaderDialog((Frame) SwingUtilities.getWindowAncestor(this),
+                    "Sửa Thông Tin Độc Giả");
+            dialog.setReaderData(name, dob, gender, phone, email, address);
             dialog.setVisible(true);
 
             if (dialog.isSucceeded()) {
@@ -248,13 +272,16 @@ public class ReaderPanel extends JPanel {
                     String newDobStr = dialog.getDob().trim();
                     String newGender = dialog.getGender();
                     String newPhone = dialog.getPhone().trim();
+                    String newEmail = dialog.getEmail().trim();
                     String newAddress = dialog.getAddress().trim();
 
                     LocalDate newDob = null;
                     try {
-                        if (!newDobStr.isEmpty()) newDob = LocalDate.parse(newDobStr);
+                        if (!newDobStr.isEmpty())
+                            newDob = LocalDate.parse(newDobStr);
                     } catch (DateTimeParseException ex) {
-                        JOptionPane.showMessageDialog(this, "Ngày sinh phải có định dạng YYYY-MM-DD.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Ngày sinh phải có định dạng YYYY-MM-DD.", "Lỗi",
+                                JOptionPane.ERROR_MESSAGE);
                         return;
                     }
                     if (!PHONE_PATTERN.matcher(newPhone).matches()) {
@@ -266,6 +293,9 @@ public class ReaderPanel extends JPanel {
                     target.setDob(newDob);
                     target.setGender(newGender);
                     target.setPhoneNumber(newPhone);
+                    if (!newEmail.isEmpty()) {
+                        target.setEmail(newEmail);
+                    }
                     target.setAddress(newAddress);
 
                     // persist via manager
@@ -279,7 +309,8 @@ public class ReaderPanel extends JPanel {
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                    JOptionPane.showMessageDialog(this, "Lỗi khi sửa độc giả:\n" + ex.toString(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Lỗi khi sửa độc giả:\n" + ex.toString(), "Lỗi",
+                            JOptionPane.ERROR_MESSAGE);
                 }
             }
         } else {
@@ -296,9 +327,13 @@ public class ReaderPanel extends JPanel {
             if (confirm == JOptionPane.YES_OPTION) {
                 String id = (String) tableModel.getValueAt(selectedRow, 0);
                 Reader target = null;
-                for (Reader r : readers) if (r.getUserID().equals(id)) { target = r; break; }
+                for (Reader r : readers)
+                    if (r.getUserID().equals(id)) {
+                        target = r;
+                        break;
+                    }
                 if (target != null) {
-                        try {
+                    try {
                         userMgr.removeUser(target.getUserID());
                         readers = userMgr.getAllReaders();
                         populateTable();
@@ -309,7 +344,8 @@ public class ReaderPanel extends JPanel {
                         }
                     } catch (Exception ex) {
                         ex.printStackTrace();
-                        JOptionPane.showMessageDialog(this, "Lỗi khi xóa độc giả:\n" + ex.toString(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Lỗi khi xóa độc giả:\n" + ex.toString(), "Lỗi",
+                                JOptionPane.ERROR_MESSAGE);
                     }
                 }
             }

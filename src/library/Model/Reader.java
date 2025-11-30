@@ -1,4 +1,5 @@
 package library.Model;
+
 //================== MinhNQ =========================
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -13,9 +14,12 @@ public class Reader extends User implements Displayable, Serializable {
     private boolean isCardValid;
     private List<Loan> loanHistory;
 
-    public Reader(int idNumber, String name, String phoneNumber, String address, 
-                  String username, String password) {
-        super(name, phoneNumber, (username == null || username.trim().isEmpty()) ? ("reader" + idNumber + "@example.com") : (username + "@example.com"), address, username, password);
+    public Reader(int idNumber, String name, String phoneNumber, String address,
+            String username, String password) {
+        super(name, phoneNumber,
+                (username == null || username.trim().isEmpty()) ? ("reader" + idNumber + "@example.com")
+                        : (username + "@example.com"),
+                address, username, password);
         this.id = "R" + String.format("%03d", idNumber);
         this.dob = null;
         this.gender = "Khác";
@@ -24,8 +28,11 @@ public class Reader extends User implements Displayable, Serializable {
     }
 
     public Reader(int idNumber, String name, String phoneNumber, String address,
-                  String username, String password, LocalDate dob, String gender) {
-        super(name, phoneNumber, (username == null || username.trim().isEmpty()) ? ("reader" + idNumber + "@example.com") : (username + "@example.com"), address, username, password);
+            String username, String password, LocalDate dob, String gender) {
+        super(name, phoneNumber,
+                (username == null || username.trim().isEmpty()) ? ("reader" + idNumber + "@example.com")
+                        : (username + "@example.com"),
+                address, username, password);
         this.id = "R" + String.format("%03d", idNumber);
         this.dob = dob;
         this.gender = (gender == null) ? "Khác" : gender;
@@ -71,11 +78,12 @@ public class Reader extends User implements Displayable, Serializable {
         }
         this.loanHistory.add(loan);
     }
+
     @Override
     public String getUserID() {
         return this.id;
     }
-    
+
     @Override
     public void displayInformation() {
         System.out.println("Mã độc giả: " + getUserID());
