@@ -1,11 +1,11 @@
 package library.GUI;
 
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import library.Manager.bookManager;
 import library.Manager.dataManager;
 import library.Manager.loanManager;
@@ -255,6 +255,10 @@ public class LoanPanel extends JPanel {
                         "Vui lòng điền đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 return;
             }
+
+            // Refresh managers
+            bookMgr = new bookManager(dataManager.loadBooks());
+            userMgr = new userManager();
 
             // Find reader
             Reader reader = (Reader) userMgr.findUserById(readerId);
