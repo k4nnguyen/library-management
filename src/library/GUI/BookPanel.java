@@ -6,6 +6,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import library.Manager.bookManager;
 import library.Manager.dataManager;
+import library.Manager.loanManager;
 import library.Model.Book;
 
 public class BookPanel extends JPanel {
@@ -14,14 +15,20 @@ public class BookPanel extends JPanel {
     private DefaultTableModel tableModel;
     private JTextField searchField;
     private bookManager manager;
+    private loanManager loanMgr;
 
     public BookPanel() {
         initializeUI();
     }
 
-    // New constructor to accept centralized manager
+    // New constructor to accept centralized managers
     public BookPanel(library.Manager.bookManager manager) {
+        this(manager, null);
+    }
+
+    public BookPanel(library.Manager.bookManager manager, library.Manager.loanManager loanMgr) {
         this.manager = manager;
+        this.loanMgr = loanMgr;
         initializeUI();
     }
 
@@ -56,8 +63,8 @@ public class BookPanel extends JPanel {
 
         add(headerPanel, BorderLayout.NORTH);
 
-        // Table
-        String[] columnNames = { "Mã Sách", "Tên Sách", "Tác Giả", "Thể Loại", "Năm XB", "Số Lượng" };
+        // Table (add 'Đang Mượn' column to show how many copies currently borrowed)
+        String[] columnNames = { "Mã Sách", "Tên Sách", "Tác Giả", "Thể Loại", "Năm XB", "Đang Mượn", "Số Lượng" };
         tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -102,6 +109,9 @@ public class BookPanel extends JPanel {
             List<Book> loaded = dataManager.loadBooks();
             manager = new bookManager(loaded);
         }
+        if (loanMgr == null) {
+            loanMgr = new loanManager();
+        }
         populateTable();
 
         // wire search button after manager is ready
@@ -144,12 +154,20 @@ public class BookPanel extends JPanel {
         // clear
         tableModel.setRowCount(0);
         for (Book b : manager.getAllBooks()) {
+            // count active loans for this book
+            int borrowed = 0;
+            try {
+                borrowed = (int) loanMgr.searchByBookId(b.getBookID()).stream().filter(l -> !l.isReturned()).count();
+            } catch (Exception ex) {
+                borrowed = 0;
+            }
             tableModel.addRow(new Object[] {
                     String.format("%02d", b.getBookID()),
                     b.getBookName(),
                     b.getAuthor(),
                     b.getGenre(),
                     String.valueOf(b.getPublishYear()),
+                    String.valueOf(borrowed),
                     String.valueOf(b.getQuantity())
             });
         }
@@ -158,12 +176,19 @@ public class BookPanel extends JPanel {
     private void populateTable(List<Book> list) {
         tableModel.setRowCount(0);
         for (Book b : list) {
+            int borrowed = 0;
+            try {
+                borrowed = (int) loanMgr.searchByBookId(b.getBookID()).stream().filter(l -> !l.isReturned()).count();
+            } catch (Exception ex) {
+                borrowed = 0;
+            }
             tableModel.addRow(new Object[] {
                     String.format("%02d", b.getBookID()),
                     b.getBookName(),
                     b.getAuthor(),
                     b.getGenre(),
                     String.valueOf(b.getPublishYear()),
+                    String.valueOf(borrowed),
                     String.valueOf(b.getQuantity())
             });
         }
@@ -240,6 +265,21 @@ public class BookPanel extends JPanel {
                     return;
                 }
                 int newQuantity = dialog.getQuantity();
+                    // Prevent setting quantity lower than current active borrowed count
+                    int activeBorrowed = 0;
+                    try {
+                        if (loanMgr != null) {
+                            activeBorrowed = (int) loanMgr.searchByBookId(id).stream().filter(l -> !l.isReturned()).count();
+                        }
+                    } catch (Exception ex) {
+                        activeBorrowed = 0;
+                    }
+                    if (newQuantity < activeBorrowed) {
+                        JOptionPane.showMessageDialog(this,
+                                "Không thể giảm số lượng sách xuống " + newQuantity + " vì đang có " + activeBorrowed
+                                        + " lượt mượn chưa trả.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
                 // keep existing length
                 int length = existing.getBookLength();
                 manager.updateBook(id, dialog.getBookTitle(), dialog.getCategory(), dialog.getAuthor(), length, newYear,
@@ -265,6 +305,19 @@ public class BookPanel extends JPanel {
             if (confirm == JOptionPane.YES_OPTION) {
                 String idStr = (String) tableModel.getValueAt(selectedRow, 0);
                 int id = Integer.parseInt(idStr);
+                // check active loans for this book
+                int activeLoans = 0;
+                try {
+                    activeLoans = (int) loanMgr.searchByBookId(id).stream().filter(l -> !l.isReturned()).count();
+                } catch (Exception ex) {
+                    activeLoans = 0;
+                }
+                if (activeLoans > 0) {
+                    JOptionPane.showMessageDialog(this,
+                            "Không thể xóa sách này vì còn " + activeLoans + " lượt mượn đang hoạt động.", "Lỗi",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 try {
                     manager.removeBook(id);
                     dataManager.saveBooks(manager.getBooks());
@@ -292,5 +345,11 @@ public class BookPanel extends JPanel {
         button.setFont(new Font("Arial", Font.BOLD, 12));
         button.setPreferredSize(new Dimension(80, 30));
         return button;
+    }
+
+    // Allow external callers (e.g., MainFrame) to request a refresh
+    public void refresh() {
+        // repopulate table from current manager state
+        populateTable();
     }
 }

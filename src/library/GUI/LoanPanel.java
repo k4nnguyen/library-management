@@ -367,6 +367,13 @@ public class LoanPanel extends JPanel {
 
             // Refresh table
             loadLoans();
+            // Also refresh Books / Readers views and stats in main frame
+            java.awt.Window win = SwingUtilities.getWindowAncestor(this);
+            if (win instanceof MainFrame) {
+                ((MainFrame) win).refreshBooks();
+                ((MainFrame) win).refreshReaders();
+                ((MainFrame) win).refreshStats();
+            }
 
         } catch (IllegalStateException | IllegalArgumentException ex) {
             JOptionPane.showMessageDialog(this,
@@ -493,7 +500,7 @@ public class LoanPanel extends JPanel {
 
             if (confirm == JOptionPane.YES_OPTION) {
                 try {
-                    loanMgr.returnLoan(foundLoan[0]);
+                        loanMgr.returnLoan(foundLoan[0]);
                     JOptionPane.showMessageDialog(this,
                             "Đã trả sách thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
 
@@ -503,6 +510,13 @@ public class LoanPanel extends JPanel {
                     returnButton.setEnabled(false);
                     foundLoan[0] = null;
                     loadLoans();
+                    // Also refresh Books / Readers views and stats in main frame
+                    java.awt.Window win = SwingUtilities.getWindowAncestor(this);
+                    if (win instanceof MainFrame) {
+                        ((MainFrame) win).refreshBooks();
+                        ((MainFrame) win).refreshReaders();
+                        ((MainFrame) win).refreshStats();
+                    }
 
                 } catch (IllegalStateException | IllegalArgumentException ex) {
                     JOptionPane.showMessageDialog(this,

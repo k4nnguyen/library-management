@@ -17,6 +17,9 @@ public class MainFrame extends JFrame {
     private JLabel dateTimeLabel;
     private JLabel welcomeLabel;
     private Timer dateTimeTimer;
+    // keep references to panels so we can trigger refreshes
+    private BookPanel bookPanel;
+    private ReaderPanel readerPanel;
 
     public MainFrame() {
         initializeUI();
@@ -46,11 +49,22 @@ public class MainFrame extends JFrame {
         loanMgr.setBookManager(bookMgr);
         loanMgr.setUserManager(userMgr);
 
+        // Initialize central managers and pass into panels
+        bookManager bookMgr = new bookManager(dataManager.loadBooks());
+        userManager userMgr = new userManager();
+        loanManager loanMgr = new loanManager();
+        // inject references so loanManager can persist related data
+        loanMgr.setBookManager(bookMgr);
+        loanMgr.setUserManager(userMgr);
+
         // Add Panels (keep reference to statsPanel so we can refresh)
         statsPanel = new StatsPanel();
         contentPanel.add(statsPanel, "STATS");
-        contentPanel.add(new BookPanel(bookMgr), "BOOKS");
-        contentPanel.add(new ReaderPanel(userMgr), "READERS");
+        // create panels and keep references
+        bookPanel = new BookPanel(bookMgr, loanMgr);
+        readerPanel = new ReaderPanel(userMgr, loanMgr);
+        contentPanel.add(bookPanel, "BOOKS");
+        contentPanel.add(readerPanel, "READERS");
         contentPanel.add(new LoanPanel(loanMgr, bookMgr, userMgr), "LOANS");
 
         add(contentPanel, BorderLayout.CENTER);
@@ -96,6 +110,13 @@ public class MainFrame extends JFrame {
         welcomeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         sidebar.add(Box.createRigidArea(new Dimension(0, 6)));
         sidebar.add(welcomeLabel);
+        // Welcome username below the current time
+        welcomeLabel = new JLabel("Welcome");
+        welcomeLabel.setForeground(Color.WHITE);
+        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        welcomeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        sidebar.add(Box.createRigidArea(new Dimension(0, 6)));
+        sidebar.add(welcomeLabel);
         sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
 
         // Start timer to update date/time every second
@@ -126,8 +147,7 @@ public class MainFrame extends JFrame {
         button.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
 
         button.addActionListener(e -> {
-            // If navigating to stats, refresh the stats panel first so numbers are
-            // up-to-date
+            // If navigating to stats, refresh the stats panel first so numbers are up-to-date
             if ("STATS".equals(cardName) && statsPanel != null) {
                 statsPanel.refreshStats();
             }
@@ -172,10 +192,33 @@ public class MainFrame extends JFrame {
         }
     }
 
+    /**
+     * Update the welcome label with the logged-in username. Call this after a
+     * successful login (e.g. from LoginFrame).
+     */
+    public void setLoggedInUser(String username) {
+        if (welcomeLabel != null) {
+            if (username == null || username.trim().isEmpty()) {
+                welcomeLabel.setText("Welcome");
+            } else {
+                welcomeLabel.setText("Welcome " + username.trim());
+            }
+        }
+    }
+
     // Allow other panels to request a stats refresh
     public void refreshStats() {
         if (statsPanel != null) {
             statsPanel.refreshStats();
         }
+    }
+
+    // Allow other parts of the app to refresh books and readers display
+    public void refreshBooks() {
+        if (bookPanel != null) bookPanel.refresh();
+    }
+
+    public void refreshReaders() {
+        if (readerPanel != null) readerPanel.refresh();
     }
 }
