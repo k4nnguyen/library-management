@@ -2,6 +2,7 @@ package library.GUI;
 
 import java.awt.*;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import library.Manager.bookManager;
@@ -16,6 +17,7 @@ public class BookPanel extends JPanel {
     private JTextField searchField;
     private bookManager manager;
     private loanManager loanMgr;
+    private JComboBox<String> genreCombo; // moved to field so we can refresh it dynamically
 
     public BookPanel() {
         initializeUI();
@@ -48,14 +50,18 @@ public class BookPanel extends JPanel {
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         searchPanel.setBackground(Color.WHITE);
         // search options: ID, Tên, Tác giả, Thể loại
-        String[] options = { "ID", "Tên", "Tác giả", "Thể loại" };
+        String[] options = { "ID", "Tên", "Tác giả", "Thể Loại" };
         JComboBox<String> searchOption = new JComboBox<>(options);
         searchField = new JTextField(18);
+        // genre combo (hidden unless 'Thể Loại' selected)
+        genreCombo = new JComboBox<>();
+        genreCombo.setVisible(false);
         JButton searchButton = new JButton("Tìm kiếm");
         searchPanel.add(new JLabel("Tìm theo:"));
         searchPanel.add(searchOption);
         searchPanel.add(new JLabel("Tìm kiếm:"));
         searchPanel.add(searchField);
+        searchPanel.add(genreCombo);
         searchPanel.add(searchButton);
 
         headerPanel.add(titleLabel, BorderLayout.WEST);
@@ -65,12 +71,6 @@ public class BookPanel extends JPanel {
 
         // Table (add 'Đang Mượn' column to show how many copies currently borrowed)
         String[] columnNames = { "Mã Sách", "Tên Sách", "Tác Giả", "Thể Loại", "Năm XB", "Đang Mượn", "Số Lượng" };
-        tableModel = new DefaultTableModel(columnNames, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
         tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -115,9 +115,35 @@ public class BookPanel extends JPanel {
         populateTable();
 
         // wire search button after manager is ready
-        searchButton.addActionListener(e -> {
-            String q = searchField.getText().trim();
+        // when search option changes, show/hide the genre combo
+        searchOption.addActionListener(ev -> {
             String opt = (String) searchOption.getSelectedItem();
+            if ("Thể Loại".equals(opt)) {
+                // refresh genres from manager and show combo
+                refreshGenreCombo();
+                searchField.setVisible(false);
+                genreCombo.setVisible(true);
+            } else {
+                genreCombo.setVisible(false);
+                searchField.setVisible(true);
+            }
+            searchPanel.revalidate();
+            searchPanel.repaint();
+        });
+
+        searchButton.addActionListener(e -> {
+            String opt = (String) searchOption.getSelectedItem();
+            if ("Thể Loại".equals(opt)) {
+                String genre = (String) genreCombo.getSelectedItem();
+                if (genre == null || genre.trim().isEmpty() || "Tất cả".equals(genre)) {
+                    populateTable();
+                } else {
+                    populateTable(manager.searchByGenre(genre));
+                }
+                return;
+            }
+
+            String q = searchField.getText().trim();
             if (q.isEmpty()) {
                 populateTable();
                 return;
@@ -140,9 +166,6 @@ public class BookPanel extends JPanel {
                     break;
                 case "Tác giả":
                     populateTable(manager.searchByAuthor(q));
-                    break;
-                case "Thể loại":
-                    populateTable(manager.searchByGenre(q));
                     break;
                 default:
                     populateTable();
@@ -172,7 +195,6 @@ public class BookPanel extends JPanel {
             });
         }
     }
-
     private void populateTable(List<Book> list) {
         tableModel.setRowCount(0);
         for (Book b : list) {
@@ -192,6 +214,21 @@ public class BookPanel extends JPanel {
                     String.valueOf(b.getQuantity())
             });
         }
+    }
+
+    // Refresh the genre combo from current manager data.
+    private void refreshGenreCombo() {
+        if (genreCombo == null) return;
+        genreCombo.removeAllItems();
+        List<String> genres = manager.getAllBooks().stream()
+                .map(Book::getGenre)
+                .filter(g -> g != null && !g.trim().isEmpty())
+                .map(String::trim)
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+        genreCombo.addItem("Tất cả");
+        for (String g : genres) genreCombo.addItem(g);
     }
 
     private void showAddBookDialog() {
@@ -221,6 +258,8 @@ public class BookPanel extends JPanel {
             int length = 100;
             manager.addBook(title, genre, author, length, year, quantity);
             dataManager.saveBooks(manager.getBooks());
+            // refresh UI and genre filter so new genres appear immediately
+            refreshGenreCombo();
             populateTable();
             // notify main frame to refresh stats
             java.awt.Window win = SwingUtilities.getWindowAncestor(this);
@@ -285,6 +324,8 @@ public class BookPanel extends JPanel {
                 manager.updateBook(id, dialog.getBookTitle(), dialog.getCategory(), dialog.getAuthor(), length, newYear,
                         newQuantity);
                 dataManager.saveBooks(manager.getBooks());
+                // refresh genres in case category changed
+                refreshGenreCombo();
                 populateTable();
                 // notify main frame to refresh stats
                 java.awt.Window win = SwingUtilities.getWindowAncestor(this);
@@ -321,6 +362,8 @@ public class BookPanel extends JPanel {
                 try {
                     manager.removeBook(id);
                     dataManager.saveBooks(manager.getBooks());
+                    // refresh genres in case removal changed available categories
+                    refreshGenreCombo();
                     populateTable();
                     // notify main frame to refresh stats
                     java.awt.Window win = SwingUtilities.getWindowAncestor(this);

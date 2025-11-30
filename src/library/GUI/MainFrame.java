@@ -48,6 +48,8 @@ public class MainFrame extends JFrame {
         // inject references so loanManager can persist related data
         loanMgr.setBookManager(bookMgr);
         loanMgr.setUserManager(userMgr);
+        // inject loan manager into book manager so bookManager can enforce quantity invariants
+        bookMgr.setLoanManager(loanMgr);
 
         // Add Panels (keep reference to statsPanel so we can refresh)
         statsPanel = new StatsPanel();
@@ -95,13 +97,6 @@ public class MainFrame extends JFrame {
         dateTimeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         updateDateTime();
         sidebar.add(dateTimeLabel);
-        // Welcome username below the current time
-        welcomeLabel = new JLabel("Welcome");
-        welcomeLabel.setForeground(Color.WHITE);
-        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 12));
-        welcomeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        sidebar.add(Box.createRigidArea(new Dimension(0, 6)));
-        sidebar.add(welcomeLabel);
         // Welcome username below the current time
         welcomeLabel = new JLabel("Welcome");
         welcomeLabel.setForeground(Color.WHITE);

@@ -5,11 +5,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import library.Model.Book;
+import library.Model.Loan;
 import library.Service.IBookService;
 
 public class bookManager implements IBookService{
     private final List<Book> books;
     private int nextBookId;
+    // optional reference to loanManager to enforce invariants
+    private loanManager loanMgr;
     
     public bookManager(){
         this.books = new ArrayList<>();
@@ -70,7 +73,16 @@ public class bookManager implements IBookService{
         if(book == null) {
             throw new IllegalArgumentException("Không tìm thấy sách với ID: " + bookId);
         }
-        
+        // Validate quantity against active borrows if loan manager is available
+        int activeBorrows = 0;
+        if (loanMgr != null) {
+            List<Loan> loansForBook = loanMgr.getLoansByBook(book);
+            activeBorrows = (int) loansForBook.stream().filter(l -> !l.isReturned()).count();
+        }
+        if (quantity < activeBorrows) {
+            throw new IllegalArgumentException("Số lượng mới không thể nhỏ hơn số sách đang được mượn: " + activeBorrows);
+        }
+
         book.setBookName(name);
         book.setGenre(genre);
         book.setAuthor(author);
@@ -101,12 +113,24 @@ public class bookManager implements IBookService{
         if (quantity < 0) {
             throw new IllegalArgumentException("Số lượng sách không thể âm");
         }
-        
         Book x = findBookById(bookId);
-        if(x != null)
+        if(x != null) {
+            int activeBorrows = 0;
+            if (loanMgr != null) {
+                List<Loan> loansForBook = loanMgr.getLoansByBook(x);
+                activeBorrows = (int) loansForBook.stream().filter(l -> !l.isReturned()).count();
+            }
+            if (quantity < activeBorrows) {
+                throw new IllegalArgumentException("Số lượng mới không thể nhỏ hơn số sách đang được mượn: " + activeBorrows);
+            }
             x.setQuantity(quantity);
-        else
+        } else
             throw new IllegalArgumentException("Không tìm thấy sách với ID: " + bookId);
+    }
+
+    // Optional setter to inject loanManager for enforcing invariants
+    public void setLoanManager(loanManager lm) {
+        this.loanMgr = lm;
     }
     
     // ======= Find Book function =======
