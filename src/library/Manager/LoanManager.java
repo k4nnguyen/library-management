@@ -7,25 +7,22 @@ import library.Model.Book;
 import library.Model.Loan;
 import library.Model.Reader;
 import library.Service.ILoanService;
-import library.Manager.dataManager;
-import library.Manager.bookManager;
-import library.Manager.userManager;
 
-public class loanManager implements ILoanService {
+public class LoanManager implements ILoanService {
     private final List<Loan> loans;
     private int nextLoanNumber;
     // optional refs to other managers so we can persist related data
-    private bookManager bookMgr;
-    private userManager userMgr;
+    private BookManager bookMgr;
+    private UserManager userMgr;
 
-    public loanManager() {
-        this.loans = dataManager.loadLoans();
+    public LoanManager() {
+        this.loans = DataManager.loadLoans();
         // Calculate next loan number based on existing loans
         this.nextLoanNumber = calculateNextLoanNumber();
     }
 
     // Construct with existing loans (e.g., loaded from persistence)
-    public loanManager(List<Loan> initialLoans) {
+    public LoanManager(List<Loan> initialLoans) {
         this.loans = new ArrayList<>();
         if (initialLoans != null)
             this.loans.addAll(initialLoans);
@@ -33,18 +30,18 @@ public class loanManager implements ILoanService {
     }
 
     // Optional constructor to inject managers
-    public loanManager(bookManager bookMgr, userManager userMgr) {
-        this.loans = dataManager.loadLoans();
+    public LoanManager(BookManager bookMgr, UserManager userMgr) {
+        this.loans = DataManager.loadLoans();
         this.nextLoanNumber = calculateNextLoanNumber();
         this.bookMgr = bookMgr;
         this.userMgr = userMgr;
     }
 
-    public void setBookManager(bookManager bm) {
+    public void setBookManager(BookManager bm) {
         this.bookMgr = bm;
     }
 
-    public void setUserManager(userManager um) {
+    public void setUserManager(UserManager um) {
         this.userMgr = um;
     }
 
@@ -94,13 +91,13 @@ public class loanManager implements ILoanService {
             loans.add(loan);
 
             // Save to persistence
-            dataManager.saveLoans(loans);
+            DataManager.saveLoans(loans);
             // also persist books/readers if managers available
             if (bookMgr != null) {
-                dataManager.saveBooks(bookMgr.getBooks());
+                DataManager.saveBooks(bookMgr.getBooks());
             }
             if (userMgr != null) {
-                dataManager.saveReaders(userMgr.getAllReaders());
+                DataManager.saveReaders(userMgr.getAllReaders());
             }
 
             return loan;
@@ -125,13 +122,13 @@ public class loanManager implements ILoanService {
             loan.getBook().returnItem();
 
             // Save to persistence
-            dataManager.saveLoans(loans);
+            DataManager.saveLoans(loans);
             // also persist books/readers if managers available
             if (bookMgr != null) {
-                dataManager.saveBooks(bookMgr.getBooks());
+                DataManager.saveBooks(bookMgr.getBooks());
             }
             if (userMgr != null) {
-                dataManager.saveReaders(userMgr.getAllReaders());
+                DataManager.saveReaders(userMgr.getAllReaders());
             }
         } catch (IllegalStateException | IllegalArgumentException e) {
             throw e; // Re-throw validation errors

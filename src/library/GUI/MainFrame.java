@@ -4,10 +4,10 @@ import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.*;
-import library.Manager.bookManager;
-import library.Manager.dataManager;
-import library.Manager.loanManager;
-import library.Manager.userManager;
+import library.Manager.BookManager;
+import library.Manager.DataManager;
+import library.Manager.LoanManager;
+import library.Manager.UserManager;
 
 public class MainFrame extends JFrame {
 
@@ -42,9 +42,9 @@ public class MainFrame extends JFrame {
         contentPanel.setBackground(Color.WHITE);
 
         // Initialize central managers and pass into panels
-        bookManager bookMgr = new bookManager(dataManager.loadBooks());
-        userManager userMgr = new userManager();
-        loanManager loanMgr = new loanManager();
+        BookManager bookMgr = new BookManager(DataManager.loadBooks());
+        UserManager userMgr = new UserManager();
+        LoanManager loanMgr = new LoanManager();
         // inject references so loanManager can persist related data
         loanMgr.setBookManager(bookMgr);
         loanMgr.setUserManager(userMgr);

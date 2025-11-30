@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.regex.Pattern;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import library.Manager.dataManager;
-import library.Manager.loanManager;
-import library.Manager.userManager;
+import library.Manager.DataManager;
+import library.Manager.LoanManager;
+import library.Manager.UserManager;
 import library.Model.Reader;
 
 public class ReaderPanel extends JPanel {
@@ -19,8 +19,8 @@ public class ReaderPanel extends JPanel {
     private JTextField searchField;
     private JComboBox<String> searchOption;
     private List<Reader> readers;
-    private userManager userMgr;
-    private loanManager loanMgr;
+    private UserManager userMgr;
+    private LoanManager loanMgr;
 
     // Phone pattern matches User.PHONE_REGEX = "\\d{10}"
     private static final Pattern PHONE_PATTERN = Pattern.compile("\\d{10}");
@@ -32,12 +32,12 @@ public class ReaderPanel extends JPanel {
     }
 
     // Constructor that accepts an injected userManager (centralized)
-    public ReaderPanel(library.Manager.userManager userMgr) {
+    public ReaderPanel(UserManager userMgr) {
         this(userMgr, null);
     }
 
     // Constructor that accepts both userManager and loanManager
-    public ReaderPanel(library.Manager.userManager userMgr, library.Manager.loanManager loanMgr) {
+    public ReaderPanel(UserManager userMgr, LoanManager loanMgr) {
         this.userMgr = userMgr;
         this.loanMgr = loanMgr;
         this.readers = (userMgr != null) ? userMgr.getAllReaders() : null;
@@ -110,10 +110,10 @@ public class ReaderPanel extends JPanel {
 
         // init manager and load data (use injected userMgr if provided)
         if (userMgr == null) {
-            userMgr = new userManager();
+            userMgr = new UserManager();
         }
         if (loanMgr == null) {
-            loanMgr = new loanManager();
+            loanMgr = new LoanManager();
         }
         if (readers == null) readers = userMgr.getAllReaders();
         populateTable();
@@ -247,7 +247,7 @@ public class ReaderPanel extends JPanel {
                     return;
                 }
 
-                int idNum = dataManager.nextReaderNumber(readers);
+                int idNum = DataManager.nextReaderNumber(readers);
                 String username = "reader" + idNum;
                 String password = "pass123";
                 // create via userManager (persists internally)

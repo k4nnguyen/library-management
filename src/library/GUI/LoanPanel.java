@@ -6,10 +6,10 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import library.Manager.bookManager;
-import library.Manager.dataManager;
-import library.Manager.loanManager;
-import library.Manager.userManager;
+import library.Manager.BookManager;
+import library.Manager.DataManager;
+import library.Manager.LoanManager;
+import library.Manager.UserManager;
 import library.Model.Book;
 import library.Model.Loan;
 import library.Model.Reader;
@@ -26,9 +26,9 @@ public class LoanPanel extends JPanel {
     private JComboBox<String> borrowBookCombo;
 
     // Managers
-    private loanManager loanMgr;
-    private bookManager bookMgr;
-    private userManager userMgr;
+    private LoanManager loanMgr;
+    private BookManager bookMgr;
+    private UserManager userMgr;
     private List<Loan> loans;
 
     public LoanPanel() {
@@ -38,7 +38,7 @@ public class LoanPanel extends JPanel {
     }
 
     // New constructor to accept centralized managers
-    public LoanPanel(library.Manager.loanManager loanMgr, library.Manager.bookManager bookMgr, library.Manager.userManager userMgr) {
+    public LoanPanel(LoanManager loanMgr, BookManager bookMgr, UserManager userMgr) {
         this.loanMgr = loanMgr;
         this.bookMgr = bookMgr;
         this.userMgr = userMgr;
@@ -47,9 +47,9 @@ public class LoanPanel extends JPanel {
     }
 
     private void initializeManagers() {
-        loanMgr = new loanManager();
-        bookMgr = new bookManager(dataManager.loadBooks());
-        userMgr = new userManager();
+        loanMgr = new LoanManager();
+        bookMgr = new BookManager(DataManager.loadBooks());
+        userMgr = new UserManager();
     }
 
     private void initializeUI() {
@@ -269,8 +269,8 @@ public class LoanPanel extends JPanel {
 
     private void populateBorrowChoices() {
         // ensure managers
-        if (userMgr == null) userMgr = new userManager();
-        if (bookMgr == null) bookMgr = new bookManager(dataManager.loadBooks());
+        if (userMgr == null) userMgr = new UserManager();
+        if (bookMgr == null) bookMgr = new BookManager(DataManager.loadBooks());
 
         // populate reader combo with "ID - Name" entries
         borrowReaderCombo.removeAllItems();
@@ -314,7 +314,7 @@ public class LoanPanel extends JPanel {
             }
 
             // Find reader (use injected managers)
-            if (userMgr == null) userMgr = new userManager();
+            if (userMgr == null) userMgr = new UserManager();
             Reader reader = (Reader) userMgr.findUserById(readerId);
             if (reader == null) {
                 JOptionPane.showMessageDialog(this,
