@@ -49,14 +49,6 @@ public class MainFrame extends JFrame {
         loanMgr.setBookManager(bookMgr);
         loanMgr.setUserManager(userMgr);
 
-        // Initialize central managers and pass into panels
-        bookManager bookMgr = new bookManager(dataManager.loadBooks());
-        userManager userMgr = new userManager();
-        loanManager loanMgr = new loanManager();
-        // inject references so loanManager can persist related data
-        loanMgr.setBookManager(bookMgr);
-        loanMgr.setUserManager(userMgr);
-
         // Add Panels (keep reference to statsPanel so we can refresh)
         statsPanel = new StatsPanel();
         contentPanel.add(statsPanel, "STATS");
@@ -176,20 +168,6 @@ public class MainFrame extends JFrame {
         SwingUtilities.invokeLater(() -> {
             new MainFrame().setVisible(true);
         });
-    }
-
-    /**
-     * Update the welcome label with the logged-in username. Call this after a
-     * successful login (e.g. from LoginFrame).
-     */
-    public void setLoggedInUser(String username) {
-        if (welcomeLabel != null) {
-            if (username == null || username.trim().isEmpty()) {
-                welcomeLabel.setText("Welcome");
-            } else {
-                welcomeLabel.setText("Welcome " + username.trim());
-            }
-        }
     }
 
     /**
