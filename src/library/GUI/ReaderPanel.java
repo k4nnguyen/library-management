@@ -22,8 +22,17 @@ public class ReaderPanel extends JPanel {
 
     // Phone pattern matches User.PHONE_REGEX = "\\d{10}"
     private static final Pattern PHONE_PATTERN = Pattern.compile("\\d{10}");
+    // Email pattern matches User.EMAIL_REGEX
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
 
     public ReaderPanel() {
+        initializeUI();
+    }
+
+    // Constructor that accepts an injected userManager (centralized)
+    public ReaderPanel(library.Manager.userManager userMgr) {
+        this.userMgr = userMgr;
+        this.readers = (userMgr != null) ? userMgr.getAllReaders() : null;
         initializeUI();
     }
 
@@ -91,9 +100,11 @@ public class ReaderPanel extends JPanel {
 
         add(buttonPanel, BorderLayout.SOUTH);
 
-        // init manager and load data
-        userMgr = new userManager();
-        readers = userMgr.getAllReaders();
+        // init manager and load data (use injected userMgr if provided)
+        if (userMgr == null) {
+            userMgr = new userManager();
+        }
+        if (readers == null) readers = userMgr.getAllReaders();
         populateTable();
 
         // search action with filter option
@@ -213,9 +224,16 @@ public class ReaderPanel extends JPanel {
                     return;
                 }
 
-                // validate email - if empty, will use auto-generated; otherwise validate format
+                // validate email - require non-empty and valid format
                 if (email.isEmpty()) {
-                    email = null; // Will trigger auto-generation in Reader constructor
+                    JOptionPane.showMessageDialog(this, "Email không được để trống.", "Lỗi",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (!EMAIL_PATTERN.matcher(email).matches()) {
+                    JOptionPane.showMessageDialog(this, "Email không đúng định dạng (ví dụ: user@example.com).", "Lỗi",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
                 }
 
                 int idNum = dataManager.nextReaderNumber(readers);
@@ -293,9 +311,17 @@ public class ReaderPanel extends JPanel {
                     target.setDob(newDob);
                     target.setGender(newGender);
                     target.setPhoneNumber(newPhone);
-                    if (!newEmail.isEmpty()) {
-                        target.setEmail(newEmail);
+                    if (newEmail.isEmpty()) {
+                        JOptionPane.showMessageDialog(this, "Email không được để trống.", "Lỗi",
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
                     }
+                    if (!EMAIL_PATTERN.matcher(newEmail).matches()) {
+                        JOptionPane.showMessageDialog(this, "Email không đúng định dạng (ví dụ: user@example.com).", "Lỗi",
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    target.setEmail(newEmail);
                     target.setAddress(newAddress);
 
                     // persist via manager

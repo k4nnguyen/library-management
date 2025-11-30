@@ -130,24 +130,22 @@ public class LoginFrame extends JFrame {
 
         //Demo login, can ket noi vs phg thuc xac thuc khac
         if (username.equals("admin") && password.equals("admin")) {
-
-            openMainApplication();
+            openMainApplication(username);
         } else if (username.equals("user") && password.equals("user")) {
-
-            openMainApplication();
+            openMainApplication(username);
         } else {
             messageLabel.setText("Sai tên đăng nhập hoặc mật khẩu!");
             passwordField.setText("");
         }
     }
 
-    private void openMainApplication() {
+    private void openMainApplication(String username) {
 
         this.dispose();
 
-
         SwingUtilities.invokeLater(() -> {
             MainFrame mainFrame = new MainFrame();
+            mainFrame.setLoggedInUser(username);
             mainFrame.setVisible(true);
         });
     }

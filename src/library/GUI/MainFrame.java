@@ -4,6 +4,10 @@ import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.*;
+import library.Manager.bookManager;
+import library.Manager.dataManager;
+import library.Manager.loanManager;
+import library.Manager.userManager;
 
 public class MainFrame extends JFrame {
 
@@ -11,6 +15,7 @@ public class MainFrame extends JFrame {
     private CardLayout cardLayout;
     private StatsPanel statsPanel;
     private JLabel dateTimeLabel;
+    private JLabel welcomeLabel;
     private Timer dateTimeTimer;
 
     public MainFrame() {
@@ -33,12 +38,20 @@ public class MainFrame extends JFrame {
         contentPanel = new JPanel(cardLayout);
         contentPanel.setBackground(Color.WHITE);
 
+        // Initialize central managers and pass into panels
+        bookManager bookMgr = new bookManager(dataManager.loadBooks());
+        userManager userMgr = new userManager();
+        loanManager loanMgr = new loanManager();
+        // inject references so loanManager can persist related data
+        loanMgr.setBookManager(bookMgr);
+        loanMgr.setUserManager(userMgr);
+
         // Add Panels (keep reference to statsPanel so we can refresh)
         statsPanel = new StatsPanel();
         contentPanel.add(statsPanel, "STATS");
-        contentPanel.add(new BookPanel(), "BOOKS");
-        contentPanel.add(new ReaderPanel(), "READERS");
-        contentPanel.add(new LoanPanel(), "LOANS");
+        contentPanel.add(new BookPanel(bookMgr), "BOOKS");
+        contentPanel.add(new ReaderPanel(userMgr), "READERS");
+        contentPanel.add(new LoanPanel(loanMgr, bookMgr, userMgr), "LOANS");
 
         add(contentPanel, BorderLayout.CENTER);
     }
@@ -76,6 +89,13 @@ public class MainFrame extends JFrame {
         dateTimeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         updateDateTime();
         sidebar.add(dateTimeLabel);
+        // Welcome username below the current time
+        welcomeLabel = new JLabel("Welcome");
+        welcomeLabel.setForeground(Color.WHITE);
+        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        welcomeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        sidebar.add(Box.createRigidArea(new Dimension(0, 6)));
+        sidebar.add(welcomeLabel);
         sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
 
         // Start timer to update date/time every second
@@ -136,6 +156,20 @@ public class MainFrame extends JFrame {
         SwingUtilities.invokeLater(() -> {
             new MainFrame().setVisible(true);
         });
+    }
+
+    /**
+     * Update the welcome label with the logged-in username. Call this after a
+     * successful login (e.g. from LoginFrame).
+     */
+    public void setLoggedInUser(String username) {
+        if (welcomeLabel != null) {
+            if (username == null || username.trim().isEmpty()) {
+                welcomeLabel.setText("Welcome");
+            } else {
+                welcomeLabel.setText("Welcome " + username.trim());
+            }
+        }
     }
 
     // Allow other panels to request a stats refresh
