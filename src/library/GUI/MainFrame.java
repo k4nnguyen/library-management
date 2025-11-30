@@ -1,6 +1,8 @@
 package library.GUI;
 
 import java.awt.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.swing.*;
 
 public class MainFrame extends JFrame {
@@ -8,6 +10,8 @@ public class MainFrame extends JFrame {
     private JPanel contentPanel;
     private CardLayout cardLayout;
     private StatsPanel statsPanel;
+    private JLabel dateTimeLabel;
+    private Timer dateTimeTimer;
 
     public MainFrame() {
         initializeUI();
@@ -65,6 +69,19 @@ public class MainFrame extends JFrame {
 
         sidebar.add(Box.createVerticalGlue());
 
+        // Date and Time Display
+        dateTimeLabel = new JLabel();
+        dateTimeLabel.setForeground(Color.WHITE);
+        dateTimeLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+        dateTimeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        updateDateTime();
+        sidebar.add(dateTimeLabel);
+        sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
+
+        // Start timer to update date/time every second
+        dateTimeTimer = new Timer(1000, e -> updateDateTime());
+        dateTimeTimer.start();
+
         // Logout Button
         JButton logoutBtn = new JButton("Đăng Xuất");
         logoutBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -89,7 +106,8 @@ public class MainFrame extends JFrame {
         button.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
 
         button.addActionListener(e -> {
-            // If navigating to stats, refresh the stats panel first so numbers are up-to-date
+            // If navigating to stats, refresh the stats panel first so numbers are
+            // up-to-date
             if ("STATS".equals(cardName) && statsPanel != null) {
                 statsPanel.refreshStats();
             }
@@ -99,7 +117,15 @@ public class MainFrame extends JFrame {
         return button;
     }
 
+    private void updateDateTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        dateTimeLabel.setText(sdf.format(new Date()));
+    }
+
     private void logout() {
+        if (dateTimeTimer != null) {
+            dateTimeTimer.stop();
+        }
         this.dispose();
         SwingUtilities.invokeLater(() -> {
             new LoginFrame().setVisible(true);

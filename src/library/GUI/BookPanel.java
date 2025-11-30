@@ -35,12 +35,12 @@ public class BookPanel extends JPanel {
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         searchPanel.setBackground(Color.WHITE);
         // search options: ID, Tên, Tác giả, Thể loại
-        String[] options = {"ID", "Tên", "Tác giả", "Thể loại"};
+        String[] options = { "ID", "Tên", "Tác giả", "Thể loại" };
         JComboBox<String> searchOption = new JComboBox<>(options);
         searchField = new JTextField(18);
         JButton searchButton = new JButton("Tìm kiếm");
+        searchPanel.add(new JLabel("Tìm theo:"));
         searchPanel.add(searchOption);
-        searchPanel.add(new JLabel("Tìm kiếm:"));
         searchPanel.add(searchField);
         searchPanel.add(searchButton);
 
@@ -108,8 +108,10 @@ public class BookPanel extends JPanel {
                     try {
                         int id = Integer.parseInt(q);
                         Book found = manager.findBookById(id);
-                        if (found != null) populateTable(List.of(found));
-                        else populateTable(List.of());
+                        if (found != null)
+                            populateTable(List.of(found));
+                        else
+                            populateTable(List.of());
                     } catch (NumberFormatException ex) {
                         JOptionPane.showMessageDialog(this, "ID phải là số nguyên.", "Lỗi", JOptionPane.ERROR_MESSAGE);
                     }
@@ -134,12 +136,12 @@ public class BookPanel extends JPanel {
         tableModel.setRowCount(0);
         for (Book b : manager.getAllBooks()) {
             tableModel.addRow(new Object[] {
-                String.format("%02d", b.getBookID()),
-                b.getBookName(),
-                b.getAuthor(),
-                b.getGenre(),
-                String.valueOf(b.getPublishYear()),
-                String.valueOf(b.getQuantity())
+                    String.format("%02d", b.getBookID()),
+                    b.getBookName(),
+                    b.getAuthor(),
+                    b.getGenre(),
+                    String.valueOf(b.getPublishYear()),
+                    String.valueOf(b.getQuantity())
             });
         }
     }
@@ -148,12 +150,12 @@ public class BookPanel extends JPanel {
         tableModel.setRowCount(0);
         for (Book b : list) {
             tableModel.addRow(new Object[] {
-                String.format("%02d", b.getBookID()),
-                b.getBookName(),
-                b.getAuthor(),
-                b.getGenre(),
-                String.valueOf(b.getPublishYear()),
-                String.valueOf(b.getQuantity())
+                    String.format("%02d", b.getBookID()),
+                    b.getBookName(),
+                    b.getAuthor(),
+                    b.getGenre(),
+                    String.valueOf(b.getPublishYear()),
+                    String.valueOf(b.getQuantity())
             });
         }
     }
@@ -171,11 +173,13 @@ public class BookPanel extends JPanel {
             try {
                 year = Integer.parseInt(dialog.getYear().trim());
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Năm xuất bản không hợp lệ. Vui lòng nhập một số hợp lệ.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Năm xuất bản không hợp lệ. Vui lòng nhập một số hợp lệ.", "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
             if (year <= 0 || year > 2025) {
-                JOptionPane.showMessageDialog(this, "Năm xuất bản phải là số dương và không lớn hơn 2025.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Năm xuất bản phải là số dương và không lớn hơn 2025.", "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
             int quantity = dialog.getQuantity();
@@ -217,17 +221,20 @@ public class BookPanel extends JPanel {
                 try {
                     newYear = Integer.parseInt(dialog.getYear().trim());
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(this, "Năm xuất bản không hợp lệ. Vui lòng nhập một số hợp lệ.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Năm xuất bản không hợp lệ. Vui lòng nhập một số hợp lệ.",
+                            "Lỗi", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 if (newYear <= 0 || newYear > 2025) {
-                    JOptionPane.showMessageDialog(this, "Năm xuất bản phải là số dương và không lớn hơn 2025.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Năm xuất bản phải là số dương và không lớn hơn 2025.", "Lỗi",
+                            JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 int newQuantity = dialog.getQuantity();
                 // keep existing length
                 int length = existing.getBookLength();
-                manager.updateBook(id, dialog.getBookTitle(), dialog.getCategory(), dialog.getAuthor(), length, newYear, newQuantity);
+                manager.updateBook(id, dialog.getBookTitle(), dialog.getCategory(), dialog.getAuthor(), length, newYear,
+                        newQuantity);
                 dataManager.saveBooks(manager.getBooks());
                 populateTable();
                 // notify main frame to refresh stats
@@ -259,7 +266,8 @@ public class BookPanel extends JPanel {
                         ((MainFrame) win).refreshStats();
                     }
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(this, "Xóa thất bại: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Xóa thất bại: " + ex.getMessage(), "Lỗi",
+                            JOptionPane.ERROR_MESSAGE);
                 }
             }
         } else {

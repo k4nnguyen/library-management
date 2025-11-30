@@ -72,12 +72,12 @@ public class StatsPanel extends JPanel {
 
         int totalBooks = bm.getTotalBooks();
         int totalReaders = (readers == null) ? 0 : readers.size();
-        int totalLoans = lm.getTotalLoans();
+        int activeLoans = lm.getActiveLoansCount(); // Only count active (not returned) loans
         int totalOverdue = lm.getOverdueLoansCount();
 
         totalBooksLabel.setText(String.valueOf(totalBooks));
         readersLabel.setText(String.valueOf(totalReaders));
-        loansLabel.setText(String.valueOf(totalLoans));
+        loansLabel.setText(String.valueOf(activeLoans));
         overdueLabel.setText(String.valueOf(totalOverdue));
     }
 }
