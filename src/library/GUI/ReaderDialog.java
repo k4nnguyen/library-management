@@ -9,6 +9,7 @@ public class ReaderDialog extends JDialog {
     private JTextField dobField;
     private JComboBox<String> genderComboBox;
     private JTextField phoneField;
+    private JTextField emailField;
     private JTextField addressField;
     private boolean succeeded;
 
@@ -18,7 +19,7 @@ public class ReaderDialog extends JDialog {
     }
 
     private void initializeUI() {
-        setSize(400, 350);
+        setSize(400, 400);
         setLocationRelativeTo(getParent());
         setResizable(false);
         setLayout(new BorderLayout());
@@ -53,8 +54,11 @@ public class ReaderDialog extends JDialog {
         // Phone
         addLabelAndField(formPanel, "SĐT:", phoneField = new JTextField(), gbc, 3);
 
+        // Email
+        addLabelAndField(formPanel, "Email:", emailField = new JTextField(), gbc, 4);
+
         // Address
-        addLabelAndField(formPanel, "Địa Chỉ:", addressField = new JTextField(), gbc, 4);
+        addLabelAndField(formPanel, "Địa Chỉ:", addressField = new JTextField(), gbc, 5);
 
         add(formPanel, BorderLayout.CENTER);
 
@@ -120,12 +124,17 @@ public class ReaderDialog extends JDialog {
         return addressField.getText();
     }
 
+    public String getEmail() {
+        return emailField.getText();
+    }
+
     // Setters
-    public void setReaderData(String name, String dob, String gender, String phone, String address) {
+    public void setReaderData(String name, String dob, String gender, String phone, String email, String address) {
         nameField.setText(name);
         dobField.setText(dob);
         genderComboBox.setSelectedItem(gender);
         phoneField.setText(phone);
+        emailField.setText(email);
         addressField.setText(address);
     }
 }
