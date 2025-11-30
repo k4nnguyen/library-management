@@ -8,12 +8,12 @@ import library.Model.Reader;
 import library.Model.User;
 import library.Service.IUserService;
 
-public class userManager implements IUserService {
+public class UserManager implements IUserService {
 
 	private final List<Reader> readers;
 
-	public userManager() {
-		this.readers = dataManager.loadReaders();
+	public UserManager() {
+		this.readers = DataManager.loadReaders();
 	}
 
 	@Override
@@ -28,11 +28,11 @@ public class userManager implements IUserService {
 			throw new IllegalArgumentException("Email không đúng định dạng");
 		}
 
-		int idNum = dataManager.nextReaderNumber(readers);
+		int idNum = DataManager.nextReaderNumber(readers);
 		Reader r = new Reader(idNum, name, phoneNumber, address, username, password, dob, gender);
 		r.setEmail(email);
 		readers.add(r);
-		dataManager.saveReaders(readers);
+		DataManager.saveReaders(readers);
 		return r;
 	}
 
@@ -42,7 +42,7 @@ public class userManager implements IUserService {
 		Reader target = readers.stream().filter(r -> r.getUserID().equals(userId)).findFirst().orElse(null);
 		if (target != null) {
 			readers.remove(target);
-			dataManager.saveReaders(readers);
+			DataManager.saveReaders(readers);
 		}
 	}
 
@@ -53,13 +53,13 @@ public class userManager implements IUserService {
 			for (int i = 0; i < readers.size(); i++) {
 				if (readers.get(i).getUserID().equals(r.getUserID())) {
 					readers.set(i, r);
-					dataManager.saveReaders(readers);
+					DataManager.saveReaders(readers);
 					return;
 				}
 			}
 			// if not found, add
 			readers.add(r);
-			dataManager.saveReaders(readers);
+			DataManager.saveReaders(readers);
 		}
 	}
 

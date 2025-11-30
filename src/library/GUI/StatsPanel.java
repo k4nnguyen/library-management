@@ -3,9 +3,9 @@ package library.GUI;
 import java.awt.*;
 import java.util.List;
 import javax.swing.*;
-import library.Manager.bookManager;
-import library.Manager.dataManager;
-import library.Manager.loanManager;
+import library.Manager.BookManager;
+import library.Manager.DataManager;
+import library.Manager.LoanManager;
 import library.Model.Book;
 import library.Model.Loan;
 import library.Model.Reader;
@@ -62,13 +62,13 @@ public class StatsPanel extends JPanel {
 
     public void refreshStats() {
         // Load persisted data
-        List<Book> books = dataManager.loadBooks();
-        List<Reader> readers = dataManager.loadReaders();
-        List<Loan> loans = dataManager.loadLoans();
+        List<Book> books = DataManager.loadBooks();
+        List<Reader> readers = DataManager.loadReaders();
+        List<Loan> loans = DataManager.loadLoans();
 
         // Compute stats
-        bookManager bm = new bookManager(books);
-        loanManager lm = new loanManager(loans);
+        BookManager bm = new BookManager(books);
+        LoanManager lm = new LoanManager(loans);
 
         int totalBooks = bm.getTotalBooks();
         int totalReaders = (readers == null) ? 0 : readers.size();

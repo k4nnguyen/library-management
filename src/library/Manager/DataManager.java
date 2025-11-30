@@ -7,7 +7,7 @@ import library.Model.Book;
 import library.Model.Loan;
 import library.Model.Reader;
 
-public class dataManager {
+public class DataManager {
 	private static final String BOOK_FILE = "data/books.dat";
 	private static final String READER_FILE = "data/readers.dat";
 	private static final String LOAN_FILE = "data/loans.dat";

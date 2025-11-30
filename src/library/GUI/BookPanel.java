@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import library.Manager.bookManager;
-import library.Manager.dataManager;
-import library.Manager.loanManager;
+import library.Manager.BookManager;
+import library.Manager.DataManager;
+import library.Manager.LoanManager;
 import library.Model.Book;
 
 public class BookPanel extends JPanel {
@@ -15,8 +15,8 @@ public class BookPanel extends JPanel {
     private JTable bookTable;
     private DefaultTableModel tableModel;
     private JTextField searchField;
-    private bookManager manager;
-    private loanManager loanMgr;
+    private BookManager manager;
+    private LoanManager loanMgr;
     private JComboBox<String> genreCombo; // moved to field so we can refresh it dynamically
 
     public BookPanel() {
@@ -24,11 +24,11 @@ public class BookPanel extends JPanel {
     }
 
     // New constructor to accept centralized managers
-    public BookPanel(library.Manager.bookManager manager) {
+    public BookPanel(BookManager manager) {
         this(manager, null);
     }
 
-    public BookPanel(library.Manager.bookManager manager, library.Manager.loanManager loanMgr) {
+    public BookPanel(BookManager manager, LoanManager loanMgr) {
         this.manager = manager;
         this.loanMgr = loanMgr;
         initializeUI();
@@ -106,11 +106,11 @@ public class BookPanel extends JPanel {
 
         // load data and populate (use injected manager if provided)
         if (manager == null) {
-            List<Book> loaded = dataManager.loadBooks();
-            manager = new bookManager(loaded);
+            List<Book> loaded = DataManager.loadBooks();
+            manager = new BookManager(loaded);
         }
         if (loanMgr == null) {
-            loanMgr = new loanManager();
+            loanMgr = new LoanManager();
         }
         populateTable();
 
@@ -257,7 +257,7 @@ public class BookPanel extends JPanel {
             // Use a default book length/pages since dialog doesn't provide it
             int length = 100;
             manager.addBook(title, genre, author, length, year, quantity);
-            dataManager.saveBooks(manager.getBooks());
+            DataManager.saveBooks(manager.getBooks());
             // refresh UI and genre filter so new genres appear immediately
             refreshGenreCombo();
             populateTable();
@@ -323,7 +323,7 @@ public class BookPanel extends JPanel {
                 int length = existing.getBookLength();
                 manager.updateBook(id, dialog.getBookTitle(), dialog.getCategory(), dialog.getAuthor(), length, newYear,
                         newQuantity);
-                dataManager.saveBooks(manager.getBooks());
+                DataManager.saveBooks(manager.getBooks());
                 // refresh genres in case category changed
                 refreshGenreCombo();
                 populateTable();
@@ -361,7 +361,7 @@ public class BookPanel extends JPanel {
                 }
                 try {
                     manager.removeBook(id);
-                    dataManager.saveBooks(manager.getBooks());
+                    DataManager.saveBooks(manager.getBooks());
                     // refresh genres in case removal changed available categories
                     refreshGenreCombo();
                     populateTable();

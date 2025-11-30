@@ -8,19 +8,19 @@ import library.Model.Book;
 import library.Model.Loan;
 import library.Service.IBookService;
 
-public class bookManager implements IBookService{
+public class BookManager implements IBookService{
     private final List<Book> books;
     private int nextBookId;
     // optional reference to loanManager to enforce invariants
-    private loanManager loanMgr;
+    private LoanManager loanMgr;
     
-    public bookManager(){
+    public BookManager(){
         this.books = new ArrayList<>();
         this.nextBookId = 1;
     }
 
     // Construct with existing books (e.g., loaded from persistence)
-    public bookManager(List<Book> initialBooks){
+    public BookManager(List<Book> initialBooks){
         this.books = new ArrayList<>();
         if(initialBooks != null) this.books.addAll(initialBooks);
         // compute next id based on max existing id
@@ -129,7 +129,7 @@ public class bookManager implements IBookService{
     }
 
     // Optional setter to inject loanManager for enforcing invariants
-    public void setLoanManager(loanManager lm) {
+    public void setLoanManager(LoanManager lm) {
         this.loanMgr = lm;
     }
     

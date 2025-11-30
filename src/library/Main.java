@@ -13,8 +13,8 @@ public class Main {
 
         // ========== Khởi tạo Services ==========
         // Sử dụng Interface type để loose coupling
-        IBookService bookService = new bookManager();
-        ILoanService loanService = new loanManager();
+        IBookService bookService = new BookManager();
+        ILoanService loanService = new LoanManager();
 
         // ========== Demo Book Operations ==========
         System.out.println("--- THÊM SÁCH ---");
