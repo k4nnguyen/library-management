@@ -1,8 +1,10 @@
 package library.Manager;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
+
 import library.Model.Book;
 import library.Model.Loan;
 import library.Model.Reader;
@@ -81,12 +83,19 @@ public class LoanManager implements ILoanService {
                 throw new IllegalStateException("Thẻ độc giả không hợp lệ");
             }
 
-            // Generate loan ID and create loan
-            String loanId = generateLoanId();
-            Loan loan = new Loan(loanId, reader, book, borrowDate, expireDate);
+            // Use managed Book instance from bookMgr
+            Book managedBook = book;
+            if (bookMgr != null) {
+                Book found = bookMgr.findBookById(book.getBookID());
+                if (found != null) managedBook = found;
+            }
 
-            // Cập nhật trạng thái
-            book.borrow();
+            // Generate loan ID and create loan (loan will reference the managed book instance when possible)
+            String loanId = generateLoanId();
+            Loan loan = new Loan(loanId, reader, managedBook, borrowDate, expireDate);
+
+            // Update status on the managed book
+            managedBook.borrow();
             reader.addLoanToHistory(loan);
             loans.add(loan);
 
@@ -119,7 +128,19 @@ public class LoanManager implements ILoanService {
             }
 
             loan.markAsReturned();
-            loan.getBook().returnItem();
+            // Update the authoritative Book instance (from bookMgr when possible)
+            if (bookMgr != null) {
+                Book managed = bookMgr.findBookById(loan.getBook().getBookID());
+                if (managed != null) {
+                    managed.returnItem();
+                } else {
+                    // fallback to the book instance stored inside loan
+                    loan.getBook().returnItem();
+                }
+            } else {
+                // No book manager available, update whatever book object is in the loan
+                loan.getBook().returnItem();
+            }
 
             // Save to persistence
             DataManager.saveLoans(loans);
