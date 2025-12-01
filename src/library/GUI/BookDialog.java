@@ -2,6 +2,7 @@ package library.GUI;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 
 public class BookDialog extends JDialog {
 
@@ -9,6 +10,7 @@ public class BookDialog extends JDialog {
     private JTextField authorField;
     private JComboBox<String> categoryComboBox;
     private JTextField yearField;
+    private JTextField customCategoryField;
     private JSpinner quantitySpinner;
     private boolean succeeded;
 
@@ -50,12 +52,44 @@ public class BookDialog extends JDialog {
         categoryComboBox.setBackground(Color.WHITE);
         formPanel.add(categoryComboBox, gbc);
 
-        // Year
-        addLabelAndField(formPanel, "Năm XB:", yearField = new JTextField(), gbc, 3);
-
-        // Quantity
+        // Custom category field, hidden until "Khác" selected
         gbc.gridx = 0;
-        gbc.gridy = 4;
+        gbc.gridy = 3;
+        gbc.weightx = 0.3;
+        // placeholder label for alignment
+        JLabel customLabel = new JLabel("");
+        formPanel.add(customLabel, gbc);
+        gbc.gridx = 1;
+        gbc.weightx = 0.7;
+        customCategoryField = new JTextField();
+        customCategoryField.setVisible(false);
+        formPanel.add(customCategoryField, gbc);
+
+        // Listen for selection changes to show/hide custom field
+        categoryComboBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    String sel = (String) categoryComboBox.getSelectedItem();
+                    boolean isOther = "Khác".equals(sel);
+                    customCategoryField.setVisible(isOther);
+                    customLabel.setText(isOther ? "Nhập thể loại:" : "");
+                    // revalidate/repaint so layout updates
+                    customCategoryField.getParent().revalidate();
+                    customCategoryField.getParent().repaint();
+                    if (isOther) {
+                        customCategoryField.requestFocusInWindow();
+                    }
+                }
+            }
+        });
+
+        // Year (moved down so it doesn't overlap the custom category row)
+        addLabelAndField(formPanel, "Năm XB:", yearField = new JTextField(), gbc, 4);
+
+        // Quantity (moved down one row)
+        gbc.gridx = 0;
+        gbc.gridy = 5;
         gbc.weightx = 0.3;
         formPanel.add(new JLabel("Số Lượng:"), gbc);
         gbc.gridx = 1;
@@ -116,7 +150,12 @@ public class BookDialog extends JDialog {
     }
 
     public String getCategory() {
-        return (String) categoryComboBox.getSelectedItem();
+        String sel = (String) categoryComboBox.getSelectedItem();
+        if ("Khác".equals(sel)) {
+            String custom = customCategoryField.getText().trim();
+            return custom.isEmpty() ? sel : custom;
+        }
+        return sel;
     }
 
     public String getYear() {
@@ -131,7 +170,23 @@ public class BookDialog extends JDialog {
     public void setBookData(String title, String author, String category, String year, int quantity) {
         titleField.setText(title);
         authorField.setText(author);
-        categoryComboBox.setSelectedItem(category);
+        // If category matches one of the options, select it; otherwise select "Khác" and fill custom field
+        boolean matched = false;
+        for (int i = 0; i < categoryComboBox.getItemCount(); i++) {
+            if (categoryComboBox.getItemAt(i).equals(category)) {
+                categoryComboBox.setSelectedIndex(i);
+                matched = true;
+                break;
+            }
+        }
+        if (!matched) {
+            categoryComboBox.setSelectedItem("Khác");
+            customCategoryField.setText(category == null ? "" : category);
+            customCategoryField.setVisible(true);
+        } else {
+            customCategoryField.setText("");
+            customCategoryField.setVisible(false);
+        }
         yearField.setText(year);
         quantitySpinner.setValue(quantity);
     }
