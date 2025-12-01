@@ -1,14 +1,25 @@
 package library.GUI;
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.swing.*;
+import library.Manager.BookManager;
+import library.Manager.DataManager;
+import library.Manager.LoanManager;
+import library.Manager.UserManager;
 
 public class MainFrame extends JFrame {
 
     private JPanel contentPanel;
     private CardLayout cardLayout;
+    private StatsPanel statsPanel;
+    private JLabel dateTimeLabel;
+    private JLabel welcomeLabel;
+    private Timer dateTimeTimer;
+    // keep references to panels so we can trigger refreshes
+    private BookPanel bookPanel;
+    private ReaderPanel readerPanel;
 
     public MainFrame() {
         initializeUI();
@@ -30,11 +41,25 @@ public class MainFrame extends JFrame {
         contentPanel = new JPanel(cardLayout);
         contentPanel.setBackground(Color.WHITE);
 
-        // Add Panels
-        contentPanel.add(new StatsPanel(), "STATS");
-        contentPanel.add(new BookPanel(), "BOOKS");
-        contentPanel.add(new ReaderPanel(), "READERS");
-        contentPanel.add(new LoanPanel(), "LOANS");
+        // Initialize central managers and pass into panels
+        BookManager bookMgr = new BookManager(DataManager.loadBooks());
+        UserManager userMgr = new UserManager();
+        LoanManager loanMgr = new LoanManager();
+        // inject references so loanManager can persist related data
+        loanMgr.setBookManager(bookMgr);
+        loanMgr.setUserManager(userMgr);
+        // inject loan manager into book manager so bookManager can enforce quantity invariants
+        bookMgr.setLoanManager(loanMgr);
+
+        // Add Panels (keep reference to statsPanel so we can refresh)
+        statsPanel = new StatsPanel();
+        contentPanel.add(statsPanel, "STATS");
+        // create panels and keep references
+        bookPanel = new BookPanel(bookMgr, loanMgr);
+        readerPanel = new ReaderPanel(userMgr, loanMgr);
+        contentPanel.add(bookPanel, "BOOKS");
+        contentPanel.add(readerPanel, "READERS");
+        contentPanel.add(new LoanPanel(loanMgr, bookMgr, userMgr), "LOANS");
 
         add(contentPanel, BorderLayout.CENTER);
     }
@@ -65,6 +90,26 @@ public class MainFrame extends JFrame {
 
         sidebar.add(Box.createVerticalGlue());
 
+        // Date and Time Display
+        dateTimeLabel = new JLabel();
+        dateTimeLabel.setForeground(Color.WHITE);
+        dateTimeLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+        dateTimeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        updateDateTime();
+        sidebar.add(dateTimeLabel);
+        // Welcome username below the current time
+        welcomeLabel = new JLabel("Welcome");
+        welcomeLabel.setForeground(Color.WHITE);
+        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        welcomeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        sidebar.add(Box.createRigidArea(new Dimension(0, 6)));
+        sidebar.add(welcomeLabel);
+        sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
+
+        // Start timer to update date/time every second
+        dateTimeTimer = new Timer(1000, e -> updateDateTime());
+        dateTimeTimer.start();
+
         // Logout Button
         JButton logoutBtn = new JButton("Đăng Xuất");
         logoutBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -88,12 +133,26 @@ public class MainFrame extends JFrame {
         button.setFont(new Font("Arial", Font.PLAIN, 14));
         button.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
 
-        button.addActionListener(e -> cardLayout.show(contentPanel, cardName));
+        button.addActionListener(e -> {
+            // If navigating to stats, refresh the stats panel first so numbers are up-to-date
+            if ("STATS".equals(cardName) && statsPanel != null) {
+                statsPanel.refreshStats();
+            }
+            cardLayout.show(contentPanel, cardName);
+        });
 
         return button;
     }
 
+    private void updateDateTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        dateTimeLabel.setText(sdf.format(new Date()));
+    }
+
     private void logout() {
+        if (dateTimeTimer != null) {
+            dateTimeTimer.stop();
+        }
         this.dispose();
         SwingUtilities.invokeLater(() -> {
             new LoginFrame().setVisible(true);
@@ -104,5 +163,35 @@ public class MainFrame extends JFrame {
         SwingUtilities.invokeLater(() -> {
             new MainFrame().setVisible(true);
         });
+    }
+
+    /**
+     * Update the welcome label with the logged-in username. Call this after a
+     * successful login (e.g. from LoginFrame).
+     */
+    public void setLoggedInUser(String username) {
+        if (welcomeLabel != null) {
+            if (username == null || username.trim().isEmpty()) {
+                welcomeLabel.setText("Welcome");
+            } else {
+                welcomeLabel.setText("Welcome " + username.trim());
+            }
+        }
+    }
+
+    // Allow other panels to request a stats refresh
+    public void refreshStats() {
+        if (statsPanel != null) {
+            statsPanel.refreshStats();
+        }
+    }
+
+    // Allow other parts of the app to refresh books and readers display
+    public void refreshBooks() {
+        if (bookPanel != null) bookPanel.refresh();
+    }
+
+    public void refreshReaders() {
+        if (readerPanel != null) readerPanel.refresh();
     }
 }

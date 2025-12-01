@@ -5,11 +5,11 @@ import java.awt.*;
 
 public class ReaderDialog extends JDialog {
 
-    private JTextField idField;
     private JTextField nameField;
     private JTextField dobField;
     private JComboBox<String> genderComboBox;
     private JTextField phoneField;
+    private JTextField emailField;
     private JTextField addressField;
     private boolean succeeded;
 
@@ -19,7 +19,7 @@ public class ReaderDialog extends JDialog {
     }
 
     private void initializeUI() {
-        setSize(400, 350);
+        setSize(400, 400);
         setLocationRelativeTo(getParent());
         setResizable(false);
         setLayout(new BorderLayout());
@@ -33,18 +33,15 @@ public class ReaderDialog extends JDialog {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
 
-        // ID
-        addLabelAndField(formPanel, "Mã ĐG:", idField = new JTextField(), gbc, 0);
-
         // Name
-        addLabelAndField(formPanel, "Họ Tên:", nameField = new JTextField(), gbc, 1);
+        addLabelAndField(formPanel, "Họ Tên:", nameField = new JTextField(), gbc, 0);
 
         // DOB
-        addLabelAndField(formPanel, "Ngày Sinh:", dobField = new JTextField(), gbc, 2);
+        addLabelAndField(formPanel, "Ngày Sinh:", dobField = new JTextField(), gbc, 1);
 
         // Gender
         gbc.gridx = 0;
-        gbc.gridy = 3;
+        gbc.gridy = 2;
         gbc.weightx = 0.3;
         formPanel.add(new JLabel("Giới Tính:"), gbc);
         gbc.gridx = 1;
@@ -55,7 +52,10 @@ public class ReaderDialog extends JDialog {
         formPanel.add(genderComboBox, gbc);
 
         // Phone
-        addLabelAndField(formPanel, "SĐT:", phoneField = new JTextField(), gbc, 4);
+        addLabelAndField(formPanel, "SĐT:", phoneField = new JTextField(), gbc, 3);
+
+        // Email
+        addLabelAndField(formPanel, "Email:", emailField = new JTextField(), gbc, 4);
 
         // Address
         addLabelAndField(formPanel, "Địa Chỉ:", addressField = new JTextField(), gbc, 5);
@@ -104,10 +104,6 @@ public class ReaderDialog extends JDialog {
     }
 
     // Getters
-    public String getReaderId() {
-        return idField.getText();
-    }
-
     public String getReaderName() {
         return nameField.getText();
     }
@@ -128,14 +124,17 @@ public class ReaderDialog extends JDialog {
         return addressField.getText();
     }
 
+    public String getEmail() {
+        return emailField.getText();
+    }
+
     // Setters
-    public void setReaderData(String id, String name, String dob, String gender, String phone, String address) {
-        idField.setText(id);
-        idField.setEditable(false);
+    public void setReaderData(String name, String dob, String gender, String phone, String email, String address) {
         nameField.setText(name);
         dobField.setText(dob);
         genderComboBox.setSelectedItem(gender);
         phoneField.setText(phone);
+        emailField.setText(email);
         addressField.setText(address);
     }
 }

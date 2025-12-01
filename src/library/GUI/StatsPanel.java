@@ -1,12 +1,25 @@
 package library.GUI;
 
-import javax.swing.*;
 import java.awt.*;
+import java.util.List;
+import javax.swing.*;
+import library.Manager.BookManager;
+import library.Manager.DataManager;
+import library.Manager.LoanManager;
+import library.Model.Book;
+import library.Model.Loan;
+import library.Model.Reader;
 
 public class StatsPanel extends JPanel {
 
+    private JLabel totalBooksLabel;
+    private JLabel readersLabel;
+    private JLabel loansLabel;
+    private JLabel overdueLabel;
+
     public StatsPanel() {
         initializeUI();
+        refreshStats();
     }
 
     private void initializeUI() {
@@ -14,13 +27,25 @@ public class StatsPanel extends JPanel {
         setBackground(Color.WHITE);
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        add(createStatCard("Tổng Số Sách", "1,250", new Color(0, 150, 200)));
-        add(createStatCard("Độc Giả", "340", new Color(0, 180, 100)));
-        add(createStatCard("Đang Mượn", "45", new Color(255, 140, 0)));
-        add(createStatCard("Quá Hạn", "5", new Color(200, 0, 0)));
+        totalBooksLabel = createValueLabel();
+        readersLabel = createValueLabel();
+        loansLabel = createValueLabel();
+        overdueLabel = createValueLabel();
+
+        add(createStatCard("Tổng Số Sách", totalBooksLabel, new Color(0, 150, 200)));
+        add(createStatCard("Độc Giả", readersLabel, new Color(0, 180, 100)));
+        add(createStatCard("Đang Mượn", loansLabel, new Color(255, 140, 0)));
+        add(createStatCard("Quá Hạn", overdueLabel, new Color(200, 0, 0)));
     }
 
-    private JPanel createStatCard(String title, String value, Color color) {
+    private JLabel createValueLabel() {
+        JLabel valueLabel = new JLabel("0", JLabel.RIGHT);
+        valueLabel.setFont(new Font("Arial", Font.BOLD, 48));
+        valueLabel.setForeground(Color.WHITE);
+        return valueLabel;
+    }
+
+    private JPanel createStatCard(String title, JLabel valueLabel, Color color) {
         JPanel card = new JPanel(new BorderLayout());
         card.setBackground(color);
         card.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -29,13 +54,30 @@ public class StatsPanel extends JPanel {
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         titleLabel.setForeground(Color.WHITE);
 
-        JLabel valueLabel = new JLabel(value, JLabel.RIGHT);
-        valueLabel.setFont(new Font("Arial", Font.BOLD, 48));
-        valueLabel.setForeground(Color.WHITE);
-
         card.add(titleLabel, BorderLayout.NORTH);
         card.add(valueLabel, BorderLayout.CENTER);
 
         return card;
+    }
+
+    public void refreshStats() {
+        // Load persisted data
+        List<Book> books = DataManager.loadBooks();
+        List<Reader> readers = DataManager.loadReaders();
+        List<Loan> loans = DataManager.loadLoans();
+
+        // Compute stats
+        BookManager bm = new BookManager(books);
+        LoanManager lm = new LoanManager(loans);
+
+        int totalBooks = bm.getTotalBooks();
+        int totalReaders = (readers == null) ? 0 : readers.size();
+        int activeLoans = lm.getActiveLoansCount(); // Only count active (not returned) loans
+        int totalOverdue = lm.getOverdueLoansCount();
+
+        totalBooksLabel.setText(String.valueOf(totalBooks));
+        readersLabel.setText(String.valueOf(totalReaders));
+        loansLabel.setText(String.valueOf(activeLoans));
+        overdueLabel.setText(String.valueOf(totalOverdue));
     }
 }

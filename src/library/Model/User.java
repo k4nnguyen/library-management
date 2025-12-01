@@ -1,7 +1,11 @@
 package library.Model;
 //================== MinhNQ =========================
+import java.io.Serializable;
 import java.util.regex.Pattern;
-public abstract class User {
+
+public abstract class User implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String name;
     private String phoneNumber;
@@ -30,7 +34,7 @@ public abstract class User {
 
     public void setName(String name) {
         if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("Ten khong duoc de trong.");
+            throw new IllegalArgumentException("Tên không được để trống!");
         }
         this.name = name;
     }
@@ -41,7 +45,7 @@ public abstract class User {
 
     public void setPhoneNumber(String phoneNumber) {
         if (phoneNumber == null || !phoneNumber.matches(PHONE_REGEX)) {
-            throw new IllegalArgumentException("So dien thoai phai la 10 chu so.");
+            throw new IllegalArgumentException("Số điện thoại phải là 10 chữ số");
         }
         this.phoneNumber = phoneNumber;
     }
@@ -52,7 +56,7 @@ public abstract class User {
 
     public void setEmail(String email) {
         if (email == null || !Pattern.matches(EMAIL_REGEX, email)) {
-            throw new IllegalArgumentException("Email khong dung dinh dang.");
+            throw new IllegalArgumentException("Email không đúng định dạng");
         }
         this.email = email;
     }
@@ -71,14 +75,14 @@ public abstract class User {
 
     public void setUsername(String username) {
         if (username == null || username.trim().isEmpty()) {
-            throw new IllegalArgumentException("Username khong duoc de trong.");
+            throw new IllegalArgumentException("Username không được để trống!");
         }
         this.username = username;
     }
 
     public void setPassword(String password) {
         if (password == null || password.length() < 6) {
-            throw new IllegalArgumentException("Password phai co it nhat 6 ky tu.");
+            throw new IllegalArgumentException("Password phải có ít nhất 6 ký tự");
         }
         this.password = password; 
     }
