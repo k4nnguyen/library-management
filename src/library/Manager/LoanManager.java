@@ -94,7 +94,7 @@ public class LoanManager implements ILoanService {
             String loanId = generateLoanId();
             Loan loan = new Loan(loanId, reader, managedBook, borrowDate, expireDate);
 
-            // Cập nhật trạng thái on the managed book
+            // Update status on the managed book
             managedBook.borrow();
             reader.addLoanToHistory(loan);
             loans.add(loan);
